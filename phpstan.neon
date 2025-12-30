@@ -1,0 +1,13 @@
+parameters:
+    level: 8
+    paths:
+        - src
+    treatPhpDocTypesAsCertain: false
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        # Allow casting mixed from arrays in fromArray() methods
+        # These are internal factory methods that receive validated external data
+        - '#Cannot cast mixed to (string|int|float|bool)#'
+        - '#Parameter \#1 \$id of static method MartinCamen\\ArrCore\\ValueObject\\ArrId::from\(\) expects int\|string, mixed given#'
+        # Traits in Testing namespace are designed for external use
+        - '#Trait MartinCamen\\ArrCore\\Testing\\.* is used zero times and is not analysed#'
