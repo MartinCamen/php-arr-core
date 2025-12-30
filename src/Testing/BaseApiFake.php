@@ -153,7 +153,7 @@ class BaseApiFake implements ApiFake
         Assert::assertEmpty($this->calls, 'Expected no endpoints to be called, but some were.');
     }
 
-    private function hasCalled(string $endpoint): bool
+    protected function hasCalled(string $endpoint): bool
     {
         foreach ($this->calls as $call) {
             if ($call['endpoint'] === $endpoint) {
@@ -164,7 +164,7 @@ class BaseApiFake implements ApiFake
         return false;
     }
 
-    private function getCallCount(string $endpoint): int
+    protected function getCallCount(string $endpoint): int
     {
         $count = 0;
 
