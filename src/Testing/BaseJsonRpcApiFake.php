@@ -21,9 +21,7 @@ class BaseJsonRpcApiFake implements JsonRpcApiFake
     protected array $calls = [];
 
     /** @param array<string, mixed> $responses */
-    public function __construct(
-        protected array $responses = [],
-    ) {}
+    public function __construct(protected array $responses = []) {}
 
     protected function getFakeClient(): JsonRpcClientInterface
     {

@@ -10,9 +10,8 @@ use Stringable;
 
 final readonly class ArrId implements Arrayable, Stringable
 {
-    private function __construct(
-        private int|string $value,
-    ) {
+    private function __construct(private int|string $value)
+    {
         if (is_string($this->value) && trim($this->value) === '') {
             throw new InvalidArgumentException('ArrId cannot be an empty string');
         }

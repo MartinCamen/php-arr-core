@@ -71,7 +71,7 @@ final class HealthCheckCollection implements Countable, IteratorAggregate
     public function toArray(): array
     {
         return array_map(
-            fn(HealthCheck $check): array => $check->toArray(),
+            static fn(HealthCheck $check): array => $check->toArray(),
             $this->checks,
         );
     }
@@ -81,7 +81,7 @@ final class HealthCheckCollection implements Countable, IteratorAggregate
         return new self(
             array_values(array_filter(
                 $this->checks,
-                fn(HealthCheck $check): bool => $check->isWarning(),
+                static fn(HealthCheck $check): bool => $check->isWarning(),
             )),
         );
     }
@@ -91,7 +91,7 @@ final class HealthCheckCollection implements Countable, IteratorAggregate
         return new self(
             array_values(array_filter(
                 $this->checks,
-                fn(HealthCheck $check): bool => $check->isError(),
+                static fn(HealthCheck $check): bool => $check->isError(),
             )),
         );
     }

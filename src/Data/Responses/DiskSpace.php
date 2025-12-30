@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MartinCamen\ArrCore\Data\Responses;
 
+use MartinCamen\PhpFileSize\FileSize;
+
 /**
  * Represents disk space information from *arr APIs.
  *
@@ -61,16 +63,16 @@ final readonly class DiskSpace
 
     public function freeSpaceGb(): float
     {
-        return round($this->freeSpace / 1024 / 1024 / 1024, 2);
+        return (new FileSize($this->freeSpace))->precision(2)->toGigabytes();
     }
 
     public function totalSpaceGb(): float
     {
-        return round($this->totalSpace / 1024 / 1024 / 1024, 2);
+        return (new FileSize($this->totalSpace))->precision(2)->toGigabytes();
     }
 
     public function usedSpaceGb(): float
     {
-        return round($this->usedSpace() / 1024 / 1024 / 1024, 2);
+        return (new FileSize($this->usedSpace()))->precision(2)->toGigabytes();
     }
 }

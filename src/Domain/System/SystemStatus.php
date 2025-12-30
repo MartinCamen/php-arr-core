@@ -90,7 +90,7 @@ final readonly class SystemStatus implements Arrayable, FromArray
             'runtime_version' => $this->runtimeVersion,
             'os_name'         => $this->osName,
             'health_issues'   => array_map(
-                fn(HealthIssue $issue): array => $issue->toArray(),
+                static fn(HealthIssue $issue): array => $issue->toArray(),
                 $this->healthIssues,
             ),
         ];

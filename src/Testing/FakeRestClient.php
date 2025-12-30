@@ -15,9 +15,7 @@ use MartinCamen\ArrCore\Contract\Endpoint;
  */
 class FakeRestClient implements RestClientInterface
 {
-    public function __construct(
-        protected ApiFake $fake,
-    ) {}
+    public function __construct(protected ApiFake $fake) {}
 
     /** @param array<string, mixed> $params */
     public function get(Endpoint $endpoint, array $params = []): mixed

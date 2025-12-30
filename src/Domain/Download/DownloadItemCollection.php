@@ -156,7 +156,7 @@ final readonly class DownloadItemCollection implements Arrayable, Countable, Ite
     {
         return array_reduce(
             $this->items,
-            fn(FileSize $total, DownloadItem $item): FileSize => $total->add($item->size),
+            static fn(FileSize $total, DownloadItem $item): FileSize => $total->add($item->size),
             FileSize::zero(),
         );
     }
@@ -168,7 +168,7 @@ final readonly class DownloadItemCollection implements Arrayable, Countable, Ite
     {
         return array_reduce(
             $this->items,
-            fn(FileSize $total, DownloadItem $item): FileSize => $total->add($item->sizeRemaining),
+            static fn(FileSize $total, DownloadItem $item): FileSize => $total->add($item->sizeRemaining),
             FileSize::zero(),
         );
     }
@@ -204,7 +204,7 @@ final readonly class DownloadItemCollection implements Arrayable, Countable, Ite
     {
         return [
             'items' => array_map(
-                fn(DownloadItem $item): array => $item->toArray(),
+                static fn(DownloadItem $item): array => $item->toArray(),
                 $this->items,
             ),
             'count'           => $this->count(),

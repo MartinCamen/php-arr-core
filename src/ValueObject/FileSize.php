@@ -14,9 +14,8 @@ final readonly class FileSize implements Arrayable
     private const int BYTES_PER_GB = 1024 * 1024 * 1024;
     private const int BYTES_PER_TB = 1024 * 1024 * 1024 * 1024;
 
-    private function __construct(
-        private int $bytes,
-    ) {
+    private function __construct(private int $bytes)
+    {
         if ($this->bytes < 0) {
             throw new InvalidArgumentException('FileSize cannot be negative');
         }

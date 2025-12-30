@@ -17,9 +17,7 @@ class FakeJsonRpcClient implements JsonRpcClientInterface
 {
     private int $requestId = 0;
 
-    public function __construct(
-        protected JsonRpcApiFake $fake,
-    ) {}
+    public function __construct(protected JsonRpcApiFake $fake) {}
 
     /** @param array<int, mixed> $params */
     public function call(JsonRpcEndpoint $endpoint, array $params = []): mixed

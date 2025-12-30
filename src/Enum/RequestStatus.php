@@ -46,7 +46,7 @@ enum RequestStatus: string
     {
         return match ($this) {
             self::Rejected, self::Fulfilled, self::Failed => true,
-            default => false,
+            default                                       => false,
         };
     }
 
@@ -57,7 +57,7 @@ enum RequestStatus: string
     {
         return match ($this) {
             self::Approved, self::Fulfilled => true,
-            default => false,
+            default                         => false,
         };
     }
 
@@ -89,11 +89,10 @@ enum RequestStatus: string
     public function colorClass(): string
     {
         return match ($this) {
-            self::Pending   => 'yellow',
-            self::Approved  => 'blue',
-            self::Rejected  => 'red',
-            self::Fulfilled => 'green',
-            self::Failed    => 'red',
+            self::Pending                => 'yellow',
+            self::Approved               => 'blue',
+            self::Rejected, self::Failed => 'red',
+            self::Fulfilled              => 'green',
         };
     }
 }

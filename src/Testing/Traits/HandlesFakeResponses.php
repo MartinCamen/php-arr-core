@@ -1,6 +1,6 @@
 <?php
 
-namespace MartinCamen\ArrCore\Testing;
+namespace MartinCamen\ArrCore\Testing\Traits;
 
 trait HandlesFakeResponses
 {

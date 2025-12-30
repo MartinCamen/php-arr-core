@@ -20,7 +20,8 @@
   ],
   "require": {
     "php": "^8.3",
-    "guzzlehttp/guzzle": "^7.10"
+    "guzzlehttp/guzzle": "^7.10",
+    "martincamen/php-file-size": "^1.0"
   },
   "require-dev": {
     "laravel/pint": "^1.0",
@@ -31,7 +32,8 @@
   },
   "autoload": {
     "psr-4": {
-      "MartinCamen\\ArrCore\\": "src/"
+      "MartinCamen\\ArrCore\\": "src/",
+      "MartinCamen\\ArrCore\\Tests\\": "tests/"
     }
   },
   "autoload-dev": {
@@ -40,8 +42,8 @@
     }
   },
   "scripts": {
-    "format": "vendor/bin/pint --diff=main",
-    "format-fix": "vendor/bin/pint",
+    "pint": "vendor/bin/pint --test",
+    "pint-fix": "vendor/bin/pint",
     "analyse": "vendor/bin/phpstan analyse",
     "test": "vendor/bin/phpunit",
     "rector": "vendor/bin/rector process --dry-run",
