@@ -11,9 +11,7 @@ use MartinCamen\ArrCore\Contract\Arrayable;
 
 final readonly class Timestamp implements Arrayable
 {
-    private function __construct(
-        private DateTimeImmutable $dateTime,
-    ) {}
+    private function __construct(private DateTimeImmutable $dateTime) {}
 
     public static function now(): self
     {

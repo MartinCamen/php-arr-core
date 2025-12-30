@@ -20,9 +20,7 @@ class BaseApiFake implements ApiFake
     protected array $calls = [];
 
     /** @param array<string, mixed> $responses */
-    public function __construct(
-        protected array $responses = [],
-    ) {}
+    public function __construct(protected array $responses = []) {}
 
     /**
      * Get the fake REST client for this fake.

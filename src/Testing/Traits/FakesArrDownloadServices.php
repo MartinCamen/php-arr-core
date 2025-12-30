@@ -1,11 +1,11 @@
 <?php
 
-namespace MartinCamen\ArrCore\Testing;
+namespace MartinCamen\ArrCore\Testing\Traits;
 
 use MartinCamen\ArrCore\Domain\System\DownloadServiceSystemStatus;
-use MartinCamen\Radarr\Testing\Factories\DownloadFactory;
-use MartinCamen\Sonarr\Data\Responses\HealthCheckCollection;
-use MartinCamen\Sonarr\Testing\Factories\SystemStatusFactory;
+use MartinCamen\ArrCore\Domain\System\HealthCheckCollection;
+use MartinCamen\ArrCore\Testing\Factories\ArrDownloadFactory;
+use MartinCamen\ArrCore\Testing\Factories\ArrSystemStatusFactory;
 
 trait FakesArrDownloadServices
 {
@@ -15,7 +15,7 @@ trait FakesArrDownloadServices
             'page'         => 1,
             'pageSize'     => 10,
             'totalRecords' => 2,
-            'records'      => DownloadFactory::makeMany(2),
+            'records'      => ArrDownloadFactory::makeMany(2),
         ];
     }
 
@@ -25,7 +25,7 @@ trait FakesArrDownloadServices
             return DownloadServiceSystemStatus::fromArray($this->responses['systemStatus']);
         }
 
-        return DownloadServiceSystemStatus::fromArray(SystemStatusFactory::make());
+        return DownloadServiceSystemStatus::fromArray(ArrSystemStatusFactory::make());
     }
 
     protected function getHealthForDownloadServiceSystemStatus(): HealthCheckCollection

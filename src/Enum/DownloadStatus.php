@@ -155,16 +155,13 @@ enum DownloadStatus: string
     public function colorClass(): string
     {
         return match ($this) {
-            self::Unknown     => 'gray',
-            self::Queued      => 'cyan',
-            self::Paused      => 'gray',
-            self::Downloading => 'blue',
-            self::Verifying   => 'purple',
-            self::Extracting  => 'purple',
-            self::Importing   => 'purple',
-            self::Completed   => 'green',
-            self::Warning     => 'yellow',
-            self::Failed      => 'red',
+            self::Unknown, self::Paused                        => 'gray',
+            self::Queued                                       => 'cyan',
+            self::Downloading                                  => 'blue',
+            self::Verifying, self::Importing, self::Extracting => 'purple',
+            self::Completed                                    => 'green',
+            self::Warning                                      => 'yellow',
+            self::Failed                                       => 'red',
         };
     }
 }

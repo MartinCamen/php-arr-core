@@ -137,15 +137,13 @@ enum MediaStatus: string
     public function colorClass(): string
     {
         return match ($this) {
-            self::Unknown     => 'gray',
-            self::Announced   => 'blue',
-            self::Requested   => 'purple',
-            self::Missing     => 'yellow',
-            self::Queued      => 'cyan',
-            self::Downloading => 'blue',
-            self::Downloaded  => 'green',
-            self::Available   => 'green',
-            self::Failed      => 'red',
+            self::Unknown                      => 'gray',
+            self::Announced, self::Downloading => 'blue',
+            self::Requested                    => 'purple',
+            self::Missing                      => 'yellow',
+            self::Queued                       => 'cyan',
+            self::Downloaded, self::Available  => 'green',
+            self::Failed                       => 'red',
         };
     }
 }

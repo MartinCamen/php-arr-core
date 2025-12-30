@@ -7,6 +7,7 @@ namespace MartinCamen\ArrCore\Data\Responses;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
+use MartinCamen\PhpFileSize\FileSize;
 use Traversable;
 
 /**
@@ -77,7 +78,7 @@ final class DiskSpaceCollection implements Countable, IteratorAggregate
     public function toArray(): array
     {
         return array_map(
-            fn(DiskSpace $disk): array => $disk->toArray(),
+            static fn(DiskSpace $disk): array => $disk->toArray(),
             $this->disks,
         );
     }
@@ -111,16 +112,16 @@ final class DiskSpaceCollection implements Countable, IteratorAggregate
 
     public function totalFreeSpaceGb(): float
     {
-        return round($this->totalFreeSpace() / 1024 / 1024 / 1024, 2);
+        return (new FileSize($this->totalFreeSpace()))->precision(2)->toGigabytes();
     }
 
     public function totalSpaceGb(): float
     {
-        return round($this->totalSpace() / 1024 / 1024 / 1024, 2);
+        return (new FileSize($this->totalSpace()))->precision(2)->toGigabytes();
     }
 
     public function totalUsedSpaceGb(): float
     {
-        return round($this->totalUsedSpace() / 1024 / 1024 / 1024, 2);
+        return (new FileSize($this->totalUsedSpace()))->precision(2)->toGigabytes();
     }
 }

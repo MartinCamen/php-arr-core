@@ -10,12 +10,6 @@ use MartinCamen\ArrCore\Enum\RequestStatus;
 
 /**
  * Centralizes all status normalization logic for *arr services.
- *
- * This class is:
- * - Pure (no side effects)
- * - Deterministic (same input = same output)
- * - Stateless (no dependencies or configuration)
- *
  * All service-specific status values are mapped exactly once, here.
  */
 final class StatusNormalizer
@@ -32,11 +26,9 @@ final class StatusNormalizer
     public static function mediaFromSonarr(string $status, bool $hasFiles = false): MediaStatus
     {
         return match (strtolower($status)) {
-            'continuing' => $hasFiles ? MediaStatus::Available : MediaStatus::Missing,
-            'ended'      => $hasFiles ? MediaStatus::Available : MediaStatus::Missing,
-            'upcoming'   => MediaStatus::Announced,
-            'deleted'    => MediaStatus::Unknown,
-            default      => MediaStatus::Unknown,
+            'continuing', 'ended' => $hasFiles ? MediaStatus::Available : MediaStatus::Missing,
+            'upcoming'            => MediaStatus::Announced,
+            default               => MediaStatus::Unknown,
         };
     }
 
@@ -96,12 +88,9 @@ final class StatusNormalizer
     public static function mediaFromRadarr(string $status, bool $hasFile = false): MediaStatus
     {
         return match (strtolower($status)) {
-            'released'  => $hasFile ? MediaStatus::Available : MediaStatus::Missing,
-            'incinemas' => $hasFile ? MediaStatus::Available : MediaStatus::Missing,
-            'announced' => MediaStatus::Announced,
-            'tba'       => MediaStatus::Announced,
-            'deleted'   => MediaStatus::Unknown,
-            default     => MediaStatus::Unknown,
+            'released', 'incinemas' => $hasFile ? MediaStatus::Available : MediaStatus::Missing,
+            'announced', 'tba'      => MediaStatus::Announced,
+            default                 => MediaStatus::Unknown,
         };
     }
 
@@ -118,22 +107,26 @@ final class StatusNormalizer
         ?string $trackedDownloadState = null,
     ): DownloadStatus {
         // Handle tracked download state for more specific status
-        if ($trackedDownloadState !== null) {
-            $mapped = self::downloadFromRadarrTrackedState($trackedDownloadState);
-            if ($mapped !== DownloadStatus::Unknown) {
-                // Override with warning/error if tracked status indicates an issue
-                if ($trackedDownloadStatus === 'warning') {
-                    return DownloadStatus::Warning;
-                }
-                if ($trackedDownloadStatus === 'error') {
-                    return DownloadStatus::Failed;
-                }
-
-                return $mapped;
-            }
+        if ($trackedDownloadState === null) {
+            return self::downloadFromSonarrQueue($status, $trackedDownloadStatus);
         }
 
-        return self::downloadFromSonarrQueue($status, $trackedDownloadStatus);
+        $mapped = self::downloadFromRadarrTrackedState($trackedDownloadState);
+
+        if ($mapped === DownloadStatus::Unknown) {
+            return self::downloadFromSonarrQueue($status, $trackedDownloadStatus);
+        }
+
+        // Override with warning/error if tracked status indicates an issue
+        if ($trackedDownloadStatus === 'warning') {
+            return DownloadStatus::Warning;
+        }
+
+        if ($trackedDownloadStatus === 'error') {
+            return DownloadStatus::Failed;
+        }
+
+        return $mapped;
     }
 
     /**
@@ -142,13 +135,11 @@ final class StatusNormalizer
     private static function downloadFromRadarrTrackedState(string $state): DownloadStatus
     {
         return match (strtolower($state)) {
-            'downloading' => DownloadStatus::Downloading,
-            'downloadfailed', 'downloadfailedpending' => DownloadStatus::Failed,
-            'importpending' => DownloadStatus::Importing,
-            'importing'     => DownloadStatus::Importing,
-            'imported'      => DownloadStatus::Completed,
-            'importfailed'  => DownloadStatus::Failed,
-            default         => DownloadStatus::Unknown,
+            'downloading'                                             => DownloadStatus::Downloading,
+            'downloadfailed', 'downloadfailedpending', 'importfailed' => DownloadStatus::Failed,
+            'importpending', 'importing'                              => DownloadStatus::Importing,
+            'imported'                                                => DownloadStatus::Completed,
+            default                                                   => DownloadStatus::Unknown,
         };
     }
 
@@ -165,36 +156,29 @@ final class StatusNormalizer
     {
         return match (strtoupper($status)) {
             // Queue states
-            'QUEUED' => DownloadStatus::Queued,
-            'PAUSED' => DownloadStatus::Paused,
+            'QUEUED', 'PP_QUEUED'             => DownloadStatus::Queued,
+            'PAUSED'                          => DownloadStatus::Paused,
 
             // Download states
-            'DOWNLOADING' => DownloadStatus::Downloading,
-            'FETCHING'    => DownloadStatus::Downloading,
+            'DOWNLOADING', 'FETCHING'         => DownloadStatus::Downloading,
 
             // Post-processing: verification
-            'PP_QUEUED'          => DownloadStatus::Queued,
-            'LOADING_PARS'       => DownloadStatus::Verifying,
-            'VERIFYING_SOURCES'  => DownloadStatus::Verifying,
-            'REPAIRING'          => DownloadStatus::Verifying,
-            'VERIFYING_REPAIRED' => DownloadStatus::Verifying,
+            'LOADING_PARS', 'VERIFYING_SOURCES',
+            'REPAIRING', 'VERIFYING_REPAIRED' => DownloadStatus::Verifying,
 
             // Post-processing: extraction
-            'RENAMING'  => DownloadStatus::Extracting,
-            'UNPACKING' => DownloadStatus::Extracting,
+            'RENAMING', 'UNPACKING'           => DownloadStatus::Extracting,
 
             // Post-processing: import
-            'MOVING'           => DownloadStatus::Importing,
-            'EXECUTING_SCRIPT' => DownloadStatus::Importing,
-            'PP_FINISHED'      => DownloadStatus::Importing,
+            'MOVING', 'PP_FINISHED',
+            'EXECUTING_SCRIPT'                => DownloadStatus::Importing,
 
             // Terminal states
-            'SUCCESS' => DownloadStatus::Completed,
-            'FAILURE' => DownloadStatus::Failed,
-            'DELETED' => DownloadStatus::Failed,
+            'SUCCESS'                         => DownloadStatus::Completed,
+            'FAILURE', 'DELETED'              => DownloadStatus::Failed,
 
             // Unknown
-            default => DownloadStatus::Unknown,
+            default                           => DownloadStatus::Unknown,
         };
     }
 
@@ -206,21 +190,21 @@ final class StatusNormalizer
     public static function downloadFromNZBGetHistory(string $status): DownloadStatus
     {
         return match (strtoupper($status)) {
-            'SUCCESS'        => DownloadStatus::Completed,
+            'SUCCESS',
+            'SUCCESS/MARK',
+            'SUCCESS/GOOD',
+            'SUCCESS/UNPACK',
             'SUCCESS/ALL'    => DownloadStatus::Completed,
-            'SUCCESS/UNPACK' => DownloadStatus::Completed,
-            'SUCCESS/MARK'   => DownloadStatus::Completed,
-            'SUCCESS/GOOD'   => DownloadStatus::Completed,
-            'FAILURE'        => DownloadStatus::Failed,
-            'FAILURE/UNPACK' => DownloadStatus::Failed,
-            'FAILURE/PAR'    => DownloadStatus::Failed,
-            'FAILURE/MOVE'   => DownloadStatus::Failed,
-            'FAILURE/SCRIPT' => DownloadStatus::Failed,
-            'FAILURE/DISK'   => DownloadStatus::Failed,
-            'FAILURE/HEALTH' => DownloadStatus::Failed,
-            'FAILURE/BAD'    => DownloadStatus::Failed,
-            'DELETED'        => DownloadStatus::Failed,
-            'DELETED/DUPE'   => DownloadStatus::Failed,
+            'FAILURE',
+            'FAILURE/SCRIPT',
+            'FAILURE/HEALTH',
+            'FAILURE/BAD',
+            'DELETED',
+            'FAILURE/DISK',
+            'FAILURE/MOVE',
+            'FAILURE/PAR',
+            'DELETED/DUPE',
+            'FAILURE/UNPACK',
             'DELETED/MANUAL' => DownloadStatus::Failed,
             default          => DownloadStatus::Unknown,
         };
@@ -236,17 +220,15 @@ final class StatusNormalizer
     public static function downloadFromSABnzbd(string $status): DownloadStatus
     {
         return match (strtolower($status)) {
-            'queued'      => DownloadStatus::Queued,
-            'paused'      => DownloadStatus::Paused,
-            'downloading' => DownloadStatus::Downloading,
-            'extracting'  => DownloadStatus::Extracting,
-            'verifying'   => DownloadStatus::Verifying,
-            'repairing'   => DownloadStatus::Verifying,
-            'moving'      => DownloadStatus::Importing,
-            'running'     => DownloadStatus::Importing,
-            'completed'   => DownloadStatus::Completed,
-            'failed'      => DownloadStatus::Failed,
-            default       => DownloadStatus::Unknown,
+            'queued'                 => DownloadStatus::Queued,
+            'paused'                 => DownloadStatus::Paused,
+            'downloading'            => DownloadStatus::Downloading,
+            'extracting'             => DownloadStatus::Extracting,
+            'verifying', 'repairing' => DownloadStatus::Verifying,
+            'moving', 'running'      => DownloadStatus::Importing,
+            'completed'              => DownloadStatus::Completed,
+            'failed'                 => DownloadStatus::Failed,
+            default                  => DownloadStatus::Unknown,
         };
     }
 
@@ -279,11 +261,10 @@ final class StatusNormalizer
     public static function requestFromJellyseerr(int $status): RequestStatus
     {
         return match ($status) {
-            1       => RequestStatus::Pending,      // PENDING_APPROVAL
-            2       => RequestStatus::Approved,     // APPROVED
+            2, 5    => RequestStatus::Approved,     // APPROVED
             3       => RequestStatus::Rejected,     // DECLINED
             4       => RequestStatus::Fulfilled,    // AVAILABLE (request fulfilled)
-            5       => RequestStatus::Approved,     // PARTIALLY_AVAILABLE (still in progress)
+            // PARTIALLY_AVAILABLE (still in progress)
             default => RequestStatus::Pending,
         };
     }
@@ -314,15 +295,15 @@ final class StatusNormalizer
     public static function downloadFromQBittorrent(string $state): DownloadStatus
     {
         return match (strtolower($state)) {
-            'stalledup', 'stalleddn' => DownloadStatus::Warning,
-            'pausedup', 'pauseddn' => DownloadStatus::Paused,
-            'queuedup', 'queueddn' => DownloadStatus::Queued,
-            'downloading', 'metadl', 'forceup', 'forcedn' => DownloadStatus::Downloading,
-            'uploading' => DownloadStatus::Completed,
+            'stalledup', 'stalleddn'                         => DownloadStatus::Warning,
+            'pausedup', 'pauseddn'                           => DownloadStatus::Paused,
+            'queuedup', 'queueddn'                           => DownloadStatus::Queued,
+            'downloading', 'metadl', 'forceup', 'forcedn'    => DownloadStatus::Downloading,
+            'uploading'                                      => DownloadStatus::Completed,
             'checkingup', 'checkingdn', 'checkingresumedata' => DownloadStatus::Verifying,
-            'moving' => DownloadStatus::Importing,
-            'error', 'missingfiles' => DownloadStatus::Failed,
-            default => DownloadStatus::Unknown,
+            'moving'                                         => DownloadStatus::Importing,
+            'error', 'missingfiles'                          => DownloadStatus::Failed,
+            default                                          => DownloadStatus::Unknown,
         };
     }
 
@@ -333,11 +314,9 @@ final class StatusNormalizer
     {
         return match ($status) {
             0       => DownloadStatus::Paused,      // TR_STATUS_STOPPED
-            1       => DownloadStatus::Queued,      // TR_STATUS_CHECK_WAIT
+            1, 3, 5 => DownloadStatus::Queued,      // TR_STATUS_CHECK_WAIT, TR_STATUS_DOWNLOAD_WAIT, TR_STATUS_SEED_WAIT
             2       => DownloadStatus::Verifying,   // TR_STATUS_CHECK
-            3       => DownloadStatus::Queued,      // TR_STATUS_DOWNLOAD_WAIT
             4       => DownloadStatus::Downloading, // TR_STATUS_DOWNLOAD
-            5       => DownloadStatus::Queued,      // TR_STATUS_SEED_WAIT
             6       => DownloadStatus::Completed,   // TR_STATUS_SEED
             default => DownloadStatus::Unknown,
         };

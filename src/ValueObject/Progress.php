@@ -8,9 +8,7 @@ use MartinCamen\ArrCore\Contract\Arrayable;
 
 final readonly class Progress implements Arrayable
 {
-    private function __construct(
-        private float $ratio,
-    ) {}
+    private function __construct(private float $ratio) {}
 
     public static function zero(): self
     {

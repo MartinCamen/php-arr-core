@@ -14,9 +14,8 @@ final readonly class Duration implements Arrayable
     private const int SECONDS_PER_HOUR = 3600;
     private const int SECONDS_PER_DAY = 86400;
 
-    private function __construct(
-        private int $seconds,
-    ) {
+    private function __construct(private int $seconds)
+    {
         if ($this->seconds < 0) {
             throw new InvalidArgumentException('Duration cannot be negative');
         }
