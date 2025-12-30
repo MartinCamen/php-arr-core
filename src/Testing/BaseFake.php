@@ -15,8 +15,8 @@ class BaseFake
         HandlesFakeResponses;
 
     /** @var array<string, array<int, array<string, mixed>>> */
-    private array $calls = [];
+    protected array $calls = [];
 
     /** @param array<string, mixed> $responses */
-    public function __construct(private array $responses = []) {}
+    public function __construct(protected array $responses = []) {}
 }

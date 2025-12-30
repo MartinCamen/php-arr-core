@@ -15,7 +15,7 @@ use MartinCamen\ArrCore\Contract\JsonRpcEndpoint;
  */
 class FakeJsonRpcClient implements JsonRpcClientInterface
 {
-    private int $requestId = 0;
+    protected int $requestId = 0;
 
     public function __construct(protected JsonRpcApiFake $fake) {}
 

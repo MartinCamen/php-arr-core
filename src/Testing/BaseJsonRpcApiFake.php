@@ -125,7 +125,7 @@ class BaseJsonRpcApiFake implements JsonRpcApiFake
         Assert::assertEmpty($this->calls, 'Expected no methods to be called, but some were.');
     }
 
-    private function hasCalled(string $method): bool
+    protected function hasCalled(string $method): bool
     {
         foreach ($this->calls as $call) {
             if ($call['method'] === $method) {
@@ -136,7 +136,7 @@ class BaseJsonRpcApiFake implements JsonRpcApiFake
         return false;
     }
 
-    private function getCallCount(string $method): int
+    protected function getCallCount(string $method): int
     {
         $count = 0;
 
