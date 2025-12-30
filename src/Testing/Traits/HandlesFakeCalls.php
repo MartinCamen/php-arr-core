@@ -9,7 +9,7 @@ trait HandlesFakeCalls
      *
      * @param array<string, mixed> $params
      */
-    private function recordCall(string $method, array $params): void
+    protected function recordCall(string $method, array $params): void
     {
         $this->calls[$method][] = [
             'params' => $params,
