@@ -18,10 +18,10 @@ use MartinCamen\ArrCore\Config\ArrServiceConfiguration;
 interface ArrServiceConfigurationContract
 {
     /** @param array<string, mixed> $data */
-    public static function fromArray(array $data): self;
+    public static function fromArray(array $data): static;
 
     /** @return array<string, mixed> */
-    public static function toArray(): array;
+    public function toArray(): array;
 
-    public static function getBaseUrl(): string;
+    public function getBaseUrl(): string;
 }
