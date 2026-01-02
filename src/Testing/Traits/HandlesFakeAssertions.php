@@ -4,7 +4,7 @@ namespace MartinCamen\ArrCore\Testing\Traits;
 
 use PHPUnit\Framework\Assert;
 
-trait AssertsFake
+trait HandlesFakeAssertions
 {
     /**
      * Assert a method was called.
