@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace MartinCamen\ArrCore\Testing;
 
-use MartinCamen\ArrCore\Testing\Traits\AssertsFake;
+use MartinCamen\ArrCore\Testing\Traits\HandlesFakeAssertions;
 use MartinCamen\ArrCore\Testing\Traits\HandlesFakeCalls;
 use MartinCamen\ArrCore\Testing\Traits\HandlesFakeResponses;
 
 class BaseFake
 {
-    use AssertsFake,
+    use HandlesFakeAssertions,
         HandlesFakeCalls,
         HandlesFakeResponses;
 

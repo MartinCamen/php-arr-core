@@ -51,7 +51,7 @@
     "check": [
       "@analyse",
       "@test",
-      "@format",
+      "@pint",
       "@rector"
     ]
   },
