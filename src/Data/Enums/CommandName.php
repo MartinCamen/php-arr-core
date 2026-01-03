@@ -13,16 +13,17 @@ enum CommandName: string
 
     case RefreshSeries = 'RefreshSeries';
     case RescanSeries = 'RescanSeries';
+    case RenameSeries = 'RenameSeries';
     case EpisodeSearch = 'EpisodeSearch';
     case SeasonSearch = 'SeasonSearch';
     case SeriesSearch = 'SeriesSearch';
     case MissingEpisodeSearch = 'MissingEpisodeSearch';
-    case RenameSeries = 'RenameSeries';
+    case CutoffUnmetEpisodeSearch = 'CutoffUnmetEpisodeSearch';
     case RefreshMovie = 'RefreshMovie';
     case RescanMovie = 'RescanMovie';
+    case RenameMovie = 'RenameMovie';
     case MoviesSearch = 'MoviesSearch';
     case DownloadedMoviesScan = 'DownloadedMoviesScan';
-    case RenameMovie = 'RenameMovie';
     case MissingMoviesSearch = 'MissingMoviesSearch';
     case CutoffUnmetMoviesSearch = 'CutoffUnmetMoviesSearch';
 }

@@ -21,7 +21,7 @@ readonly class CalendarActions
      *
      * @return array<string, mixed> $params
      */
-    public function get(?RequestOptions $options = null): array
+    public function getAll(?RequestOptions $options = null): array
     {
         return $this->client->get(CalendarEndpoint::All, $options?->toArray() ?? []);
     }
