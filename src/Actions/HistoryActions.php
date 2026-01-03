@@ -27,7 +27,7 @@ readonly class HistoryActions
         array $filters = [],
     ): array {
         $params = array_merge(
-            $pagination?->toArray() ?? PaginationOptions::default()->toArray(),
+            $pagination?->toArray() ?? PaginationOptions::make()->toArray(),
             $sort?->toArray() ?? [],
             $filters,
         );

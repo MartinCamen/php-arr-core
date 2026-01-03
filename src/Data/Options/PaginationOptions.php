@@ -20,9 +20,12 @@ final readonly class PaginationOptions implements RequestOptions
         ];
     }
 
-    public static function default(): self
+    public static function make(?int $page = null, ?int $pageSize = null): self
     {
-        return new self();
+        return new self(
+            page: $page ?? 1,
+            pageSize: $pageSize ?? 10,
+        );
     }
 
     public function withPage(int $page): self

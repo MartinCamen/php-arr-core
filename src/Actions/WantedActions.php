@@ -29,7 +29,7 @@ readonly class WantedActions
         ?WantedOptions $filters = null,
     ): array {
         $params = array_merge(
-            $pagination?->toArray() ?? PaginationOptions::default()->toArray(),
+            $pagination?->toArray() ?? PaginationOptions::make()->toArray(),
             $sort?->toArray() ?? [],
             $filters?->toArray() ?? [],
         );
@@ -72,7 +72,7 @@ readonly class WantedActions
         ?WantedOptions $filters = null,
     ): array {
         $params = array_merge(
-            $pagination?->toArray() ?? PaginationOptions::default()->toArray(),
+            $pagination?->toArray() ?? PaginationOptions::make()->toArray(),
             $sort?->toArray() ?? [],
             $filters?->toArray() ?? [],
         );

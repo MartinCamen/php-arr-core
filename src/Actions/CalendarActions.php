@@ -19,7 +19,7 @@ readonly class CalendarActions
      *
      * @link https://radarr.video/docs/api/#/Calendar/get_api_v3_calendar
      *
-     * @return array<string, mixed> $params
+     * @return array<int, array<string, mixed>> $params
      */
     public function getAll(?RequestOptions $options = null): array
     {
