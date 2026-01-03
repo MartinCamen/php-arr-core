@@ -21,7 +21,7 @@ readonly class HistoryActions
      * @param array<string, mixed> $filters
      * @return array<string, mixed>
      */
-    public function all(
+    public function getAll(
         ?PaginationOptions $pagination = null,
         ?SortOptions $sort = null,
         array $filters = [],
@@ -42,7 +42,7 @@ readonly class HistoryActions
      *
      * @link https://radarr.video/docs/api/#/History/get_api_v3_history_since
      */
-    public function since(
+    public function getAllSince(
         DateTimeInterface $date,
         ?HistoryRequestOptions $filters = null,
     ): array {

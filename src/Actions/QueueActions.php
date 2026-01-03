@@ -18,7 +18,7 @@ readonly class QueueActions
     public function __construct(protected RestClientInterface $client) {}
 
     /** @return array<string, mixed> */
-    public function all(
+    public function getAll(
         ?PaginationOptions $pagination = null,
         ?SortOptions $sort = null,
         ?RequestOptions $filters = null,

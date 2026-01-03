@@ -13,7 +13,7 @@ readonly class CommandActions
     public function __construct(protected RestClientInterface $client) {}
 
     /** @return array<string, mixed> */
-    public function all(): array
+    public function getAll(): array
     {
         $result = $this->client->get(CommandEndpoint::All);
 
@@ -23,16 +23,27 @@ readonly class CommandActions
         );
     }
 
+    /** @return array<string, mixed> */
+    public function all(): array
+    {
+        return $this->getAll();
+    }
+
     /**
      * Get command by ID.
      *
      * @link https://radarr.video/docs/api/#/Command/get_api_v3_command__id_
      */
-    public function get(int $id): Command
+    public function getById(int $id): Command
     {
         $result = $this->client->get(CommandEndpoint::ById, ['id' => $id]);
 
         return Command::fromArray($result);
+    }
+
+    public function find(int $id): Command
+    {
+        return $this->getById($id);
     }
 
     /**
@@ -72,18 +83,5 @@ readonly class CommandActions
     public function backup(): Command
     {
         return $this->run(CommandName::Backup);
-    }
-
-    /**
-     * Rename specific files.
-     *
-     * @param array<int, int> $files
-     */
-    public function renameFiles(int $id, array $files): Command
-    {
-        return $this->run(CommandName::RenameFiles, [
-            'movieId' => $id,
-            'files'   => $files,
-        ]);
     }
 }
