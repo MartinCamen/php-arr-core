@@ -24,9 +24,14 @@ final readonly class SortOptions implements RequestOptions
         return $params;
     }
 
-    public static function none(): self
-    {
-        return new self();
+    public static function make(
+        ?string $sortKey = null,
+        ?SortDirection $sortDirection = null,
+    ): self {
+        return new self(
+            sortKey: $sortKey,
+            sortDirection: $sortDirection,
+        );
     }
 
     public static function by(string $key, ?SortDirection $direction = null): self

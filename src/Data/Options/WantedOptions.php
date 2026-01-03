@@ -20,9 +20,9 @@ final readonly class WantedOptions implements RequestOptions
         return $params;
     }
 
-    public static function default(): self
+    public static function make(?bool $monitored = null): self
     {
-        return new self();
+        return new self(monitored: $monitored);
     }
 
     public function withMonitored(bool $monitored): self
