@@ -2,7 +2,7 @@
 
 namespace MartinCamen\ArrCore\Testing\Traits;
 
-use MartinCamen\ArrCore\Domain\System\DownloadServiceSystemStatus;
+use MartinCamen\ArrCore\Domain\System\DownloadServiceSystemSummary;
 use MartinCamen\ArrCore\Domain\System\HealthCheckCollection;
 use MartinCamen\ArrCore\Testing\Factories\ArrDownloadFactory;
 use MartinCamen\ArrCore\Testing\Factories\ArrSystemStatusFactory;
@@ -19,18 +19,18 @@ trait FakesArrDownloadServices
         ];
     }
 
-    protected function getStatusForDownloadServiceSystemStatus(): DownloadServiceSystemStatus
+    protected function getStatusForDownloadServiceSystemSummary(): DownloadServiceSystemSummary
     {
-        if (isset($this->responses['systemStatus'])) {
-            return DownloadServiceSystemStatus::fromArray($this->responses['systemStatus']);
+        if (isset($this->responses['systemSummary'])) {
+            return DownloadServiceSystemSummary::fromArray($this->responses['systemSummary']);
         }
 
-        return DownloadServiceSystemStatus::fromArray(ArrSystemStatusFactory::make());
+        return DownloadServiceSystemSummary::fromArray(ArrSystemStatusFactory::make());
     }
 
-    protected function getHealthForDownloadServiceSystemStatus(): HealthCheckCollection
+    protected function getHealthForDownloadServiceSystemSummary(): HealthCheckCollection
     {
-        if (isset($this->responses['systemStatus'])) {
+        if (isset($this->responses['systemSummary'])) {
             return HealthCheckCollection::fromArray($this->responses['health'] ?? []);
         }
 

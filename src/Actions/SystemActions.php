@@ -5,7 +5,7 @@ namespace MartinCamen\ArrCore\Actions;
 use MartinCamen\ArrCore\Client\RestClientInterface;
 use MartinCamen\ArrCore\Data\Enums\SystemEndpoint;
 use MartinCamen\ArrCore\Data\Responses\DiskSpaceCollection;
-use MartinCamen\ArrCore\Domain\System\DownloadServiceSystemStatus;
+use MartinCamen\ArrCore\Domain\System\DownloadServiceSystemSummary;
 use MartinCamen\ArrCore\Domain\System\HealthCheckCollection;
 
 /**
@@ -21,11 +21,11 @@ readonly class SystemActions
      *
      * @link https://radarr.video/docs/api/#/System/get_api_v3_system_status
      */
-    public function status(): DownloadServiceSystemStatus
+    public function status(): DownloadServiceSystemSummary
     {
         $result = $this->client->get(SystemEndpoint::Status);
 
-        return DownloadServiceSystemStatus::fromArray($result);
+        return DownloadServiceSystemSummary::fromArray($result);
     }
 
     /**

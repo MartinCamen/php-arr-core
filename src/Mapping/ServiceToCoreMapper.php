@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace MartinCamen\ArrCore\Mapping;
 
-use MartinCamen\ArrCore\Domain\System\DownloadServiceSystemStatus;
+use MartinCamen\ArrCore\Domain\System\DownloadServiceSystemSummary;
 use MartinCamen\ArrCore\Domain\System\HealthCheck;
 use MartinCamen\ArrCore\Domain\System\HealthIssue;
-use MartinCamen\ArrCore\Domain\System\SystemStatus;
+use MartinCamen\ArrCore\Domain\System\SystemSummary;
 use MartinCamen\ArrCore\Enum\Service;
 use MartinCamen\ArrCore\ValueObject\Duration;
 use MartinCamen\ArrCore\ValueObject\Timestamp;
@@ -15,15 +15,15 @@ use MartinCamen\ArrCore\ValueObject\Timestamp;
 class ServiceToCoreMapper
 {
     /**
-     * Map Radarr SystemStatus to Core SystemStatus.
+     * Map service SystemSummary to Core SystemSummary.
      *
      * @param array<int, HealthCheck> $healthChecks
      */
-    public static function mapToSystemStatus(
+    public static function mapToSystemSummary(
         Service $service,
-        DownloadServiceSystemStatus $dto,
+        DownloadServiceSystemSummary $dto,
         array $healthChecks = [],
-    ): SystemStatus {
+    ): SystemSummary {
         $issues = array_map(
             static fn(HealthCheck $check): HealthIssue => new HealthIssue(
                 type: $check->type,
@@ -34,7 +34,7 @@ class ServiceToCoreMapper
             $healthChecks,
         );
 
-        return new SystemStatus(
+        return new SystemSummary(
             source: $service,
             version: $dto->version,
             isHealthy: count($issues) === 0,
