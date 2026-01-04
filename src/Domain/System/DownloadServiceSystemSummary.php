@@ -7,7 +7,7 @@ namespace MartinCamen\ArrCore\Domain\System;
 use MartinCamen\ArrCore\Contract\Arrayable;
 use MartinCamen\ArrCore\Contract\FromArray;
 
-final readonly class DownloadServiceSystemStatus implements Arrayable, FromArray
+final readonly class DownloadServiceSystemSummary implements Arrayable, FromArray
 {
     public function __construct(
         public string $appName,

@@ -5,18 +5,18 @@ declare(strict_types=1);
 namespace MartinCamen\ArrCore\Tests\Unit\Domain\System;
 
 use MartinCamen\ArrCore\Domain\System\HealthIssue;
-use MartinCamen\ArrCore\Domain\System\SystemStatus;
+use MartinCamen\ArrCore\Domain\System\SystemSummary;
 use MartinCamen\ArrCore\Enum\Service;
 use MartinCamen\ArrCore\ValueObject\Timestamp;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
-final class SystemStatusTest extends TestCase
+final class SystemSummaryTest extends TestCase
 {
     #[Test]
     public function canBeCreated(): void
     {
-        $status = new SystemStatus(
+        $status = new SystemSummary(
             source: Service::Sonarr,
             version: '4.0.0.123',
             isHealthy: true,
@@ -30,7 +30,7 @@ final class SystemStatusTest extends TestCase
     #[Test]
     public function detectsHealthIssues(): void
     {
-        $healthy = new SystemStatus(
+        $healthy = new SystemSummary(
             source: Service::Sonarr,
             version: '4.0.0.123',
             isHealthy: true,
@@ -42,7 +42,7 @@ final class SystemStatusTest extends TestCase
             message: 'Root folder missing',
         );
 
-        $unhealthy = new SystemStatus(
+        $unhealthy = new SystemSummary(
             source: Service::Sonarr,
             version: '4.0.0.123',
             isHealthy: false,
@@ -58,7 +58,7 @@ final class SystemStatusTest extends TestCase
     #[Test]
     public function canBeCreatedFromArray(): void
     {
-        $status = SystemStatus::fromArray([
+        $status = SystemSummary::fromArray([
             'source'          => 'radarr',
             'version'         => '5.0.0.456',
             'is_healthy'      => true,
@@ -90,7 +90,7 @@ final class SystemStatusTest extends TestCase
     #[Test]
     public function canBeConvertedToArray(): void
     {
-        $status = new SystemStatus(
+        $status = new SystemSummary(
             source: Service::Sonarr,
             version: '4.0.0.123',
             isHealthy: true,
@@ -122,7 +122,7 @@ final class SystemStatusTest extends TestCase
     #[Test]
     public function handlesMultipleHealthIssues(): void
     {
-        $status = new SystemStatus(
+        $status = new SystemSummary(
             source: Service::Radarr,
             version: '5.0.0.456',
             isHealthy: false,

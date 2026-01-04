@@ -9,7 +9,7 @@ use MartinCamen\ArrCore\Contract\FromArray;
 use MartinCamen\ArrCore\Enum\Service;
 use MartinCamen\ArrCore\ValueObject\Timestamp;
 
-final readonly class SystemStatus implements Arrayable, FromArray
+final readonly class SystemSummary implements Arrayable, FromArray
 {
     /**
      * @param array<int, HealthIssue> $healthIssues
@@ -50,9 +50,7 @@ final readonly class SystemStatus implements Arrayable, FromArray
             return null;
         }
 
-        $diff = $this->startTime->diffFrom(Timestamp::now());
-
-        return $diff->formatted();
+        return $this->startTime->diffFrom(Timestamp::now())->formatted();
     }
 
     /**
