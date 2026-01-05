@@ -8,6 +8,12 @@ used across *arr service SDKs such as Sonarr, Radarr, Jellyseerr and NZBGet.
 The goal is to eliminate duplicated DTOs, inconsistent status handling and ad-hoc mappings
 between services that conceptually model the same things.
 
+## Currently implemented:
+- [PHP Radarr integration](https://github.com/martincamen/radarr-php)
+- [PHP Sonarr integration](https://github.com/martincamen/sonarr-php)
+- [Laravel Radarr integration](https://github.com/martincamen/laravel-radarr)
+- [Laravel Sonarr integration](https://github.com/martincamen/laravel-sonarr)
+
 ---
 
 ## Why does this exist?
@@ -40,20 +46,11 @@ that all *arr SDKs map to.
 
 ## What this package is
 
-✅ Pure PHP (no framework dependencies)
-✅ Canonical domain models
-✅ Value objects (FileSize, Duration, Progress, etc.)
-✅ Normalized enums and statuses
-✅ Mapping helpers and contracts
-
----
-
-## What this package is NOT
-
-❌ HTTP clients
-❌ API DTOs
-❌ Guzzle, Curl, or PSR-18 implementations
-❌ Service-specific assumptions
+- ✅ Pure PHP (no framework dependencies)
+- ✅ Canonical domain models
+- ✅ Value objects (FileSize, Duration, Progress, etc.)
+- ✅ Normalized enums and statuses
+- ✅ Mapping helpers and contracts
 
 ---
 
@@ -74,10 +71,10 @@ Anything that:
 - appears in multiple services
 - requires conversion or logic
 
-…is modeled as a value object.
+...is modeled as a value object.
 
 Examples:
-- `FileSize`
+- `ArrFileSize` (extends `martincamen/php-file-size`)
 - `Duration`
 - `Progress`
 
@@ -112,7 +109,7 @@ src/
 │   ├── Request/
 │   └── User/
 ├── ValueObject/
-│   ├── FileSize.php
+│   ├── ArrFileSize.php
 │   ├── Duration.php
 │   ├── Progress.php
 │   └── ArrId.php
@@ -131,14 +128,14 @@ src/
 
 ```php
 use MartinCamen\ArrCore\Domain\Download\DownloadItem;
-use MartinCamen\ArrCore\ValueObject\FileSize;
+use MartinCamen\ArrCore\ValueObject\ArrFileSize;
 use MartinCamen\ArrCore\ValueObject\Progress;
 use MartinCamen\ArrCore\Enum\DownloadStatus;
 
 $item = new DownloadItem(
     id: ArrId::fromInt(123),
     name: 'Example.Movie.2024',
-    size: FileSize::fromGB(8.5),
+    size: ArrFileSize::fromGigabytes(8.5),
     progress: Progress::fromPercentage(42),
     status: DownloadStatus::Downloading
 );
@@ -156,11 +153,12 @@ Each service SDK:
 Example:
 
 ```php
+/** @var \MartinCamen\Sonarr\Sonarr $sonarr */
 $queueItems = $sonarr->queue();
 
 $coreItems = array_map(
     fn($item) => SonarrToCoreMapper::mapQueueItem($item),
-    $queueItems
+    $queueItems,
 );
 ```
 
@@ -181,7 +179,7 @@ This package is designed to be used by:
 
 Breaking changes only occur when:
 - a domain concept changes
-- a value object’s behavior changes
+- a value object's behavior changes
 
 New services and fields should be additive whenever possible.
 

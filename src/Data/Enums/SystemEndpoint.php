@@ -16,7 +16,8 @@ enum SystemEndpoint: string implements Endpoint
     case TaskById = 'system/task/{id}';
     case Backup = 'system/backup';
 
-    public function defaultResponse(): mixed
+    /** @return array<int, mixed> */
+    public function defaultResponse(): array
     {
         return match ($this) {
             self::Status,

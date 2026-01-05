@@ -15,7 +15,8 @@ enum HistoryEndpoint: string implements Endpoint
     case Series = 'history/series';
     case Failed = 'history/failed/{id}';
 
-    public function defaultResponse(): mixed
+    /** @return null|array<int|string, int|array<int, mixed>> */
+    public function defaultResponse(): ?array
     {
         return match ($this) {
             self::All                              => [

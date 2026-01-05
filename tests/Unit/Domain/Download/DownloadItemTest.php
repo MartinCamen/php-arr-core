@@ -7,9 +7,9 @@ namespace MartinCamen\ArrCore\Tests\Unit\Domain\Download;
 use MartinCamen\ArrCore\Domain\Download\DownloadItem;
 use MartinCamen\ArrCore\Enum\DownloadStatus;
 use MartinCamen\ArrCore\Enum\Service;
+use MartinCamen\ArrCore\ValueObject\ArrFileSize;
 use MartinCamen\ArrCore\ValueObject\ArrId;
 use MartinCamen\ArrCore\ValueObject\Duration;
-use MartinCamen\ArrCore\ValueObject\FileSize;
 use MartinCamen\ArrCore\ValueObject\Progress;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -22,8 +22,8 @@ final class DownloadItemTest extends TestCase
         $item = new DownloadItem(
             id: ArrId::fromInt(123),
             name: 'Test.Download.2024',
-            size: FileSize::fromGB(4.5),
-            sizeRemaining: FileSize::fromGB(2.0),
+            size: ArrFileSize::fromGigabytes(4.5),
+            sizeRemaining: ArrFileSize::fromGigabytes(2.0),
             progress: Progress::fromPercentage(55.6),
             status: DownloadStatus::Downloading,
             source: Service::Sonarr,
@@ -41,8 +41,8 @@ final class DownloadItemTest extends TestCase
         $downloading = new DownloadItem(
             id: ArrId::fromInt(1),
             name: 'Downloading',
-            size: FileSize::fromGB(1),
-            sizeRemaining: FileSize::fromGB(0.5),
+            size: ArrFileSize::fromGigabytes(1),
+            sizeRemaining: ArrFileSize::fromGigabytes(0.5),
             progress: Progress::fromPercentage(50),
             status: DownloadStatus::Downloading,
             source: Service::NZBGet,
@@ -51,8 +51,8 @@ final class DownloadItemTest extends TestCase
         $queued = new DownloadItem(
             id: ArrId::fromInt(2),
             name: 'Queued',
-            size: FileSize::fromGB(1),
-            sizeRemaining: FileSize::fromGB(1),
+            size: ArrFileSize::fromGigabytes(1),
+            sizeRemaining: ArrFileSize::fromGigabytes(1),
             progress: Progress::zero(),
             status: DownloadStatus::Queued,
             source: Service::NZBGet,
@@ -68,8 +68,8 @@ final class DownloadItemTest extends TestCase
         $queued = new DownloadItem(
             id: ArrId::fromInt(1),
             name: 'Queued',
-            size: FileSize::fromGB(1),
-            sizeRemaining: FileSize::fromGB(1),
+            size: ArrFileSize::fromGigabytes(1),
+            sizeRemaining: ArrFileSize::fromGigabytes(1),
             progress: Progress::zero(),
             status: DownloadStatus::Queued,
             source: Service::NZBGet,
@@ -78,8 +78,8 @@ final class DownloadItemTest extends TestCase
         $paused = new DownloadItem(
             id: ArrId::fromInt(2),
             name: 'Paused',
-            size: FileSize::fromGB(1),
-            sizeRemaining: FileSize::fromGB(0.5),
+            size: ArrFileSize::fromGigabytes(1),
+            sizeRemaining: ArrFileSize::fromGigabytes(0.5),
             progress: Progress::fromPercentage(50),
             status: DownloadStatus::Paused,
             source: Service::NZBGet,
@@ -88,8 +88,8 @@ final class DownloadItemTest extends TestCase
         $downloading = new DownloadItem(
             id: ArrId::fromInt(3),
             name: 'Downloading',
-            size: FileSize::fromGB(1),
-            sizeRemaining: FileSize::fromGB(0.5),
+            size: ArrFileSize::fromGigabytes(1),
+            sizeRemaining: ArrFileSize::fromGigabytes(0.5),
             progress: Progress::fromPercentage(50),
             status: DownloadStatus::Downloading,
             source: Service::NZBGet,
@@ -106,8 +106,8 @@ final class DownloadItemTest extends TestCase
         $failed = new DownloadItem(
             id: ArrId::fromInt(1),
             name: 'Failed',
-            size: FileSize::fromGB(1),
-            sizeRemaining: FileSize::fromGB(1),
+            size: ArrFileSize::fromGigabytes(1),
+            sizeRemaining: ArrFileSize::fromGigabytes(1),
             progress: Progress::zero(),
             status: DownloadStatus::Failed,
             source: Service::NZBGet,
@@ -116,8 +116,8 @@ final class DownloadItemTest extends TestCase
         $withMessage = new DownloadItem(
             id: ArrId::fromInt(2),
             name: 'Has Error',
-            size: FileSize::fromGB(1),
-            sizeRemaining: FileSize::fromGB(0.5),
+            size: ArrFileSize::fromGigabytes(1),
+            sizeRemaining: ArrFileSize::fromGigabytes(0.5),
             progress: Progress::fromPercentage(50),
             status: DownloadStatus::Downloading,
             source: Service::NZBGet,
@@ -127,8 +127,8 @@ final class DownloadItemTest extends TestCase
         $healthy = new DownloadItem(
             id: ArrId::fromInt(3),
             name: 'Healthy',
-            size: FileSize::fromGB(1),
-            sizeRemaining: FileSize::fromGB(0.5),
+            size: ArrFileSize::fromGigabytes(1),
+            sizeRemaining: ArrFileSize::fromGigabytes(0.5),
             progress: Progress::fromPercentage(50),
             status: DownloadStatus::Downloading,
             source: Service::NZBGet,
@@ -145,8 +145,8 @@ final class DownloadItemTest extends TestCase
         $item = new DownloadItem(
             id: ArrId::fromInt(1),
             name: 'Test',
-            size: FileSize::fromGB(4),
-            sizeRemaining: FileSize::fromGB(1),
+            size: ArrFileSize::fromGigabytes(4),
+            sizeRemaining: ArrFileSize::fromGigabytes(1),
             progress: Progress::fromPercentage(75),
             status: DownloadStatus::Downloading,
             source: Service::NZBGet,
@@ -154,7 +154,7 @@ final class DownloadItemTest extends TestCase
 
         $downloaded = $item->downloadedSize();
 
-        $this->assertSame(3.0, $downloaded->gb());
+        $this->assertSame(3.0, $downloaded->toGigabytes());
     }
 
     #[Test]
@@ -163,8 +163,8 @@ final class DownloadItemTest extends TestCase
         $completed = new DownloadItem(
             id: ArrId::fromInt(1),
             name: 'Completed',
-            size: FileSize::fromGB(1),
-            sizeRemaining: FileSize::zero(),
+            size: ArrFileSize::fromGigabytes(1),
+            sizeRemaining: ArrFileSize::zero(),
             progress: Progress::complete(),
             status: DownloadStatus::Completed,
             source: Service::NZBGet,
@@ -173,8 +173,8 @@ final class DownloadItemTest extends TestCase
         $inProgress = new DownloadItem(
             id: ArrId::fromInt(2),
             name: 'In Progress',
-            size: FileSize::fromGB(1),
-            sizeRemaining: FileSize::fromGB(0.5),
+            size: ArrFileSize::fromGigabytes(1),
+            sizeRemaining: ArrFileSize::fromGigabytes(0.5),
             progress: Progress::fromPercentage(50),
             status: DownloadStatus::Downloading,
             source: Service::NZBGet,
@@ -190,8 +190,8 @@ final class DownloadItemTest extends TestCase
         $withMediaTitle = new DownloadItem(
             id: ArrId::fromInt(1),
             name: 'Show.S01E01.720p',
-            size: FileSize::fromGB(1),
-            sizeRemaining: FileSize::fromGB(0.5),
+            size: ArrFileSize::fromGigabytes(1),
+            sizeRemaining: ArrFileSize::fromGigabytes(0.5),
             progress: Progress::fromPercentage(50),
             status: DownloadStatus::Downloading,
             source: Service::Sonarr,
@@ -201,8 +201,8 @@ final class DownloadItemTest extends TestCase
         $withoutMediaTitle = new DownloadItem(
             id: ArrId::fromInt(2),
             name: 'Show.S01E01.720p',
-            size: FileSize::fromGB(1),
-            sizeRemaining: FileSize::fromGB(0.5),
+            size: ArrFileSize::fromGigabytes(1),
+            sizeRemaining: ArrFileSize::fromGigabytes(0.5),
             progress: Progress::fromPercentage(50),
             status: DownloadStatus::Downloading,
             source: Service::Sonarr,
@@ -237,8 +237,8 @@ final class DownloadItemTest extends TestCase
         $item = new DownloadItem(
             id: ArrId::fromInt(123),
             name: 'Test.Download',
-            size: FileSize::fromGB(1),
-            sizeRemaining: FileSize::fromGB(0.5),
+            size: ArrFileSize::fromGigabytes(1),
+            sizeRemaining: ArrFileSize::fromGigabytes(0.5),
             progress: Progress::fromPercentage(50),
             status: DownloadStatus::Downloading,
             source: Service::NZBGet,

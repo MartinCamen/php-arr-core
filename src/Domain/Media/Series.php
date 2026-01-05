@@ -8,8 +8,8 @@ use MartinCamen\ArrCore\Contract\FromArray;
 use MartinCamen\ArrCore\Enum\MediaStatus;
 use MartinCamen\ArrCore\Enum\MediaType;
 use MartinCamen\ArrCore\Enum\Service;
+use MartinCamen\ArrCore\ValueObject\ArrFileSize;
 use MartinCamen\ArrCore\ValueObject\ArrId;
-use MartinCamen\ArrCore\ValueObject\FileSize;
 use MartinCamen\ArrCore\ValueObject\Progress;
 use Override;
 
@@ -22,7 +22,7 @@ final readonly class Series extends Media implements FromArray
         MediaStatus $status,
         bool $monitored,
         Service $source,
-        ?FileSize $sizeOnDisk = null,
+        ?ArrFileSize $sizeOnDisk = null,
         ?string $path = null,
         ?string $overview = null,
         ?string $posterUrl = null,
@@ -137,7 +137,7 @@ final readonly class Series extends Media implements FromArray
             monitored: (bool) ($data['monitored'] ?? true),
             source: Service::from((string) $data['source']),
             sizeOnDisk: isset($data['size_on_disk'])
-                ? FileSize::fromBytes((int) $data['size_on_disk'])
+                ? ArrFileSize::fromBytes((int) $data['size_on_disk'])
                 : null,
             path: isset($data['path']) ? (string) $data['path'] : null,
             overview: isset($data['overview']) ? (string) $data['overview'] : null,

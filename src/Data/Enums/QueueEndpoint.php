@@ -15,7 +15,8 @@ enum QueueEndpoint: string implements Endpoint
     case Bulk = 'queue/bulk';
     case Status = 'queue/status';
 
-    public function defaultResponse(): mixed
+    /** @return null|array<int|string, int|array<int, mixed>> */
+    public function defaultResponse(): ?array
     {
         return match ($this) {
             self::All                   => ['page' => 1, 'pageSize' => 10, 'totalRecords' => 0, 'records' => []],
