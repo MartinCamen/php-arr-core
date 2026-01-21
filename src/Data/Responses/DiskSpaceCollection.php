@@ -7,6 +7,8 @@ namespace MartinCamen\ArrCore\Data\Responses;
 use ArrayIterator;
 use Countable;
 use IteratorAggregate;
+use MartinCamen\ArrCore\Concerns\ConvertsFileSize;
+use MartinCamen\PhpFileSize\Enums\Unit;
 use MartinCamen\PhpFileSize\FileSize;
 use Traversable;
 
@@ -19,6 +21,8 @@ use Traversable;
  */
 final class DiskSpaceCollection implements Countable, IteratorAggregate
 {
+    use ConvertsFileSize;
+
     /** @param array<int, DiskSpace> $disks */
     public function __construct(private array $disks = []) {}
 
@@ -83,45 +87,72 @@ final class DiskSpaceCollection implements Countable, IteratorAggregate
         );
     }
 
-    public function totalFreeSpace(): int
+    public function totalFreeSpace(): FileSize
     {
-        $total = 0;
+        $totalBytes = array_reduce(
+            $this->disks,
+            static fn(float $total, DiskSpace $disk): float => $total + $disk->freeSpace->getBytes(),
+            0.0,
+        );
 
-        foreach ($this->disks as $disk) {
-            $total += $disk->freeSpace;
+        return FileSize::fromBytes($totalBytes);
+    }
+
+    public function totalSpace(): FileSize
+    {
+        $totalBytes = array_reduce(
+            $this->disks,
+            static fn(float $total, DiskSpace $disk): float => $total + $disk->totalSpace->getBytes(),
+            0.0,
+        );
+
+        return FileSize::fromBytes($totalBytes);
+    }
+
+    public function totalUsedSpace(): FileSize
+    {
+        $usedBytes = $this->totalSpace()->getBytes() - $this->totalFreeSpace()->getBytes();
+
+        return FileSize::fromBytes($usedBytes);
+    }
+
+    /**
+     * Get total free space in specified unit.
+     */
+    public function totalFreeSpaceIn(Unit $unit, ?int $precision = 2): float
+    {
+        return $this->convertToUnit($this->totalFreeSpace(), $unit, $precision);
+    }
+
+    /**
+     * Get total space in specified unit.
+     */
+    public function totalSpaceIn(Unit $unit, ?int $precision = 2): float
+    {
+        return $this->convertToUnit($this->totalSpace(), $unit, $precision);
+    }
+
+    /**
+     * Get total used space in specified unit.
+     */
+    public function totalUsedSpaceIn(Unit $unit, ?int $precision = 2): float
+    {
+        return $this->convertToUnit($this->totalUsedSpace(), $unit, $precision);
+    }
+
+    public function totalUsedPercentage(): float
+    {
+        $totalBytes = $this->totalSpace()->getBytes();
+
+        if ($totalBytes === 0.0) {
+            return 0.0;
         }
 
-        return $total;
+        return round(($this->totalUsedSpace()->getBytes() / $totalBytes) * 100, 2);
     }
 
-    public function totalSpace(): int
+    public function totalFreePercentage(): float
     {
-        $total = 0;
-
-        foreach ($this->disks as $disk) {
-            $total += $disk->totalSpace;
-        }
-
-        return $total;
-    }
-
-    public function totalUsedSpace(): int
-    {
-        return $this->totalSpace() - $this->totalFreeSpace();
-    }
-
-    public function totalFreeSpaceGb(): float
-    {
-        return (new FileSize($this->totalFreeSpace()))->precision(2)->toGigabytes();
-    }
-
-    public function totalSpaceGb(): float
-    {
-        return (new FileSize($this->totalSpace()))->precision(2)->toGigabytes();
-    }
-
-    public function totalUsedSpaceGb(): float
-    {
-        return (new FileSize($this->totalUsedSpace()))->precision(2)->toGigabytes();
+        return 100.0 - $this->totalUsedPercentage();
     }
 }

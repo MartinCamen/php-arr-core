@@ -12,7 +12,8 @@ enum WantedEndpoint: string implements Endpoint
     case Missing = 'wanted/missing';
     case Cutoff = 'wanted/cutoff';
 
-    public function defaultResponse(): mixed
+    /** @return array<string, int|array<int|mixed>> */
+    public function defaultResponse(): array
     {
         return [
             'page'         => 1,

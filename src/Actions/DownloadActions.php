@@ -7,13 +7,13 @@ use MartinCamen\ArrCore\Data\Enums\QueueEndpoint;
 use MartinCamen\ArrCore\Data\Options\PaginationOptions;
 use MartinCamen\ArrCore\Data\Options\RequestOptions;
 use MartinCamen\ArrCore\Data\Options\SortOptions;
-use MartinCamen\ArrCore\Data\Responses\QueueStatus;
+use MartinCamen\ArrCore\Data\Responses\DownloadStatus;
 
 /**
  * @link https://sonarr.tv/docs/api/#v3/
  * @link https://radarr.video/docs/api/#/Queue
  */
-readonly class QueueActions
+readonly class DownloadActions
 {
     public function __construct(protected RestClientInterface $client) {}
 
@@ -32,15 +32,15 @@ readonly class QueueActions
         return $this->client->get(QueueEndpoint::All, $params);
     }
 
-    public function status(): QueueStatus
+    public function status(): DownloadStatus
     {
         $result = $this->client->get(QueueEndpoint::Status);
 
-        return QueueStatus::fromArray($result);
+        return DownloadStatus::fromArray($result);
     }
 
     /**
-     * Delete item from queue.
+     * Delete item from download queue.
      */
     public function delete(
         int $id,
@@ -59,7 +59,7 @@ readonly class QueueActions
     }
 
     /**
-     * Bulk delete items from queue.
+     * Bulk delete items from download queue.
      *
      * @param array<int, int> $ids
      */

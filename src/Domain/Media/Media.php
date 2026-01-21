@@ -8,8 +8,8 @@ use MartinCamen\ArrCore\Contract\Arrayable;
 use MartinCamen\ArrCore\Enum\MediaStatus;
 use MartinCamen\ArrCore\Enum\MediaType;
 use MartinCamen\ArrCore\Enum\Service;
+use MartinCamen\ArrCore\ValueObject\ArrFileSize;
 use MartinCamen\ArrCore\ValueObject\ArrId;
-use MartinCamen\ArrCore\ValueObject\FileSize;
 
 abstract readonly class Media implements Arrayable
 {
@@ -21,7 +21,7 @@ abstract readonly class Media implements Arrayable
         public MediaStatus $status,
         public bool $monitored,
         public Service $source,
-        public ?FileSize $sizeOnDisk = null,
+        public ?ArrFileSize $sizeOnDisk = null,
         public ?string $path = null,
         public ?string $overview = null,
         public ?string $posterUrl = null,
@@ -33,7 +33,7 @@ abstract readonly class Media implements Arrayable
      */
     public function hasFiles(): bool
     {
-        return $this->sizeOnDisk instanceof FileSize && ! $this->sizeOnDisk->isZero();
+        return $this->sizeOnDisk instanceof ArrFileSize && ! $this->sizeOnDisk->isZero();
     }
 
     /**

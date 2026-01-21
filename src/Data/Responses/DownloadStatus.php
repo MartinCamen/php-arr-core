@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace MartinCamen\ArrCore\Data\Responses;
 
 /**
- * Represents queue status from *arr APIs.
+ * Represents download queue status from *arr APIs.
  *
  * This is a shared data structure used by both Radarr and Sonarr.
  */
-final readonly class QueueStatus
+final readonly class DownloadStatus
 {
     public function __construct(
         public int $totalCount,

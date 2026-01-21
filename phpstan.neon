@@ -11,3 +11,4 @@ parameters:
         - '#Parameter \#1 \$id of static method MartinCamen\\ArrCore\\ValueObject\\ArrId::from\(\) expects int\|string, mixed given#'
         # Traits in Testing namespace are designed for external use
         - '#Trait MartinCamen\\ArrCore\\Testing\\.* is used zero times and is not analysed#'
+        - '#Trait MartinCamen\\ArrCore\\Data\\Options\\Concerns\\.* is used zero times and is not analysed#'

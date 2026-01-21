@@ -2,7 +2,7 @@
 
 namespace MartinCamen\ArrCore\Contract;
 
-interface QueueRecordContract
+interface DownloadContract
 {
     /** @param array<string, mixed> $data */
     public static function fromArray(array $data): static;

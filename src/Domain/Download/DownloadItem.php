@@ -8,9 +8,9 @@ use MartinCamen\ArrCore\Contract\Arrayable;
 use MartinCamen\ArrCore\Contract\FromArray;
 use MartinCamen\ArrCore\Enum\DownloadStatus;
 use MartinCamen\ArrCore\Enum\Service;
+use MartinCamen\ArrCore\ValueObject\ArrFileSize;
 use MartinCamen\ArrCore\ValueObject\ArrId;
 use MartinCamen\ArrCore\ValueObject\Duration;
-use MartinCamen\ArrCore\ValueObject\FileSize;
 use MartinCamen\ArrCore\ValueObject\Progress;
 use MartinCamen\ArrCore\ValueObject\Timestamp;
 
@@ -19,8 +19,8 @@ final readonly class DownloadItem implements Arrayable, FromArray
     public function __construct(
         public ArrId $id,
         public string $name,
-        public FileSize $size,
-        public FileSize $sizeRemaining,
+        public ArrFileSize $size,
+        public ArrFileSize $sizeRemaining,
         public Progress $progress,
         public DownloadStatus $status,
         public Service $source,
@@ -71,9 +71,11 @@ final readonly class DownloadItem implements Arrayable, FromArray
     /**
      * Get downloaded size.
      */
-    public function downloadedSize(): FileSize
+    public function downloadedSize(): ArrFileSize
     {
-        return $this->size->subtract($this->sizeRemaining);
+        return ArrFileSize::fromBytes(
+            $this->size->getBytes() - $this->sizeRemaining->getBytes(),
+        );
     }
 
     /**
@@ -85,7 +87,7 @@ final readonly class DownloadItem implements Arrayable, FromArray
             return null;
         }
 
-        $remainingMb = $this->sizeRemaining->mb();
+        $remainingMb = $this->sizeRemaining->toMegabytes();
         $secondsLeft = $this->eta->seconds();
 
         if ($secondsLeft <= 0) {
@@ -111,8 +113,8 @@ final readonly class DownloadItem implements Arrayable, FromArray
         return new self(
             id: ArrId::from($data['id']),
             name: (string) $data['name'],
-            size: FileSize::fromBytes((int) ($data['size'] ?? 0)),
-            sizeRemaining: FileSize::fromBytes((int) ($data['size_remaining'] ?? 0)),
+            size: ArrFileSize::fromBytes((int) ($data['size'] ?? 0)),
+            sizeRemaining: ArrFileSize::fromBytes((int) ($data['size_remaining'] ?? 0)),
             progress: Progress::fromPercentage((float) ($data['progress'] ?? 0)),
             status: DownloadStatus::from((string) $data['status']),
             source: Service::from((string) $data['source']),
