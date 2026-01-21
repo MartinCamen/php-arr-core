@@ -5,14 +5,19 @@ namespace MartinCamen\ArrCore\Data\Values\Tmdb\Concerns;
 use MartinCamen\ArrCore\Data\Values\Tmdb\TmdbValues;
 
 /** @property ?string $posterPath */
-trait HasPosterUrl
+trait HasTmdbPosterUrl
 {
-    public function getPosterUrl(?string $size = 'w500'): ?string
+    public function getTmdbPosterUrl(?string $size = 'w500'): ?string
     {
         if ($this->posterPath === null) {
             return null;
         }
 
         return TmdbValues::getImageUrl($this->posterPath, $size);
+    }
+
+    public function getPosterUrl(?string $size = 'original'): ?string
+    {
+        return $this->getTmdbPosterUrl($size);
     }
 }
