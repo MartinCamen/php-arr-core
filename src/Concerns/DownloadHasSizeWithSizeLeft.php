@@ -12,6 +12,15 @@ use MartinCamen\ArrCore\ValueObject\ArrFileSize;
  */
 trait DownloadHasSizeWithSizeLeft
 {
+    public function getProgress(): float
+    {
+        if ($this->size === 0.0) {
+            return 0.0;
+        }
+
+        return round((($this->size - $this->sizeLeft) / $this->size) * 100, 2);
+    }
+
     public function getSizeGb(): float
     {
         return ArrFileSize::fromBytes($this->size)->toGigabytes(precision: 2);
