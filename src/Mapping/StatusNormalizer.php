@@ -7,6 +7,7 @@ namespace MartinCamen\ArrCore\Mapping;
 use MartinCamen\ArrCore\Enum\DownloadStatus;
 use MartinCamen\ArrCore\Enum\MediaStatus;
 use MartinCamen\ArrCore\Enum\RequestStatus;
+use MartinCamen\ArrCore\Enum\TrackedDownloadStatus;
 
 /**
  * Centralizes all status normalization logic for *arr services.
@@ -44,22 +45,20 @@ final class StatusNormalizer
     ): DownloadStatus {
         // Handle tracked download status first if available
         if ($trackedDownloadStatus !== null) {
-            $mapped = self::downloadFromSonarrTrackedStatus($trackedDownloadStatus);
+            $mapped = TrackedDownloadStatus::fromSonarrToDownloadStatus($trackedDownloadStatus);
             if ($mapped !== DownloadStatus::Unknown) {
                 return $mapped;
             }
         }
 
         return match (strtolower($status)) {
-            'queued'                    => DownloadStatus::Queued,
-            'paused'                    => DownloadStatus::Paused,
-            'downloading'               => DownloadStatus::Downloading,
-            'completed'                 => DownloadStatus::Completed,
-            'failed'                    => DownloadStatus::Failed,
-            'warning'                   => DownloadStatus::Warning,
-            'delay'                     => DownloadStatus::Queued,
-            'downloadclientunavailable' => DownloadStatus::Warning,
-            default                     => DownloadStatus::Unknown,
+            'queued', 'delay'                      => DownloadStatus::Queued,
+            'paused'                               => DownloadStatus::Paused,
+            'downloading'                          => DownloadStatus::Downloading,
+            'completed'                            => DownloadStatus::Completed,
+            'failed'                               => DownloadStatus::Failed,
+            'warning', 'downloadclientunavailable' => DownloadStatus::Warning,
+            default                                => DownloadStatus::Unknown,
         };
     }
 
@@ -118,11 +117,11 @@ final class StatusNormalizer
         }
 
         // Override with warning/error if tracked status indicates an issue
-        if ($trackedDownloadStatus === 'warning') {
+        if ($trackedDownloadStatus === TrackedDownloadStatus::Warning->value) {
             return DownloadStatus::Warning;
         }
 
-        if ($trackedDownloadStatus === 'error') {
+        if ($trackedDownloadStatus === TrackedDownloadStatus::Error->value) {
             return DownloadStatus::Failed;
         }
 

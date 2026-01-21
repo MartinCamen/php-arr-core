@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MartinCamen\ArrCore\Testing\Factories;
 
+use MartinCamen\ArrCore\Enum\TrackedDownloadStatus;
+
 /**
  * Base factory for *arr service download/queue records.
  *
@@ -72,7 +74,7 @@ abstract class ArrDownloadFactory
     {
         return static::make($id, array_merge([
             'status'                => 'completed',
-            'trackedDownloadStatus' => 'ok',
+            'trackedDownloadStatus' => TrackedDownloadStatus::Ok->value,
             'trackedDownloadState'  => 'importPending',
             'sizeleft'              => 0,
             'timeleft'              => null,
@@ -88,7 +90,7 @@ abstract class ArrDownloadFactory
     public static function makeWithError(int $id = 1, array $overrides = []): array
     {
         return static::make($id, array_merge([
-            'trackedDownloadStatus' => 'warning',
+            'trackedDownloadStatus' => TrackedDownloadStatus::Warning->value,
             'errorMessage'          => 'Download verification failed',
             'statusMessages'        => [
                 ['title' => 'Download failed', 'messages' => ['Verification failed']],
@@ -106,7 +108,7 @@ abstract class ArrDownloadFactory
         return [
             'id'                      => $id,
             'status'                  => 'downloading',
-            'trackedDownloadStatus'   => 'ok',
+            'trackedDownloadStatus'   => TrackedDownloadStatus::Ok->value,
             'trackedDownloadState'    => 'downloading',
             'quality'                 => ['quality' => ['name' => 'Bluray-1080p']],
             'timeleft'                => '00:30:00',
