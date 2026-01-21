@@ -6,59 +6,17 @@ namespace MartinCamen\ArrCore\Enum;
 
 enum DownloadStatus: string
 {
-    /**
-     * Status is unknown or unmapped.
-     */
     case Unknown = 'unknown';
-
-    /**
-     * Download is queued, waiting to start.
-     */
     case Queued = 'queued';
-
-    /**
-     * Download is paused.
-     */
     case Paused = 'paused';
-
-    /**
-     * Download is in progress.
-     */
     case Downloading = 'downloading';
-
-    /**
-     * Download is being verified (par2 check).
-     */
     case Verifying = 'verifying';
-
-    /**
-     * Download is being extracted/unpacked.
-     */
     case Extracting = 'extracting';
-
-    /**
-     * Download is being imported/moved to library.
-     */
     case Importing = 'importing';
-
-    /**
-     * Download completed successfully.
-     */
     case Completed = 'completed';
-
-    /**
-     * Download has a warning (stalled, slow, etc).
-     */
     case Warning = 'warning';
-
-    /**
-     * Download failed.
-     */
     case Failed = 'failed';
 
-    /**
-     * Check if download is actively progressing.
-     */
     public function isActive(): bool
     {
         return match ($this) {
@@ -67,9 +25,6 @@ enum DownloadStatus: string
         };
     }
 
-    /**
-     * Check if download is in a terminal state.
-     */
     public function isTerminal(): bool
     {
         return match ($this) {
@@ -78,9 +33,6 @@ enum DownloadStatus: string
         };
     }
 
-    /**
-     * Check if download has an error or warning.
-     */
     public function isError(): bool
     {
         return match ($this) {
@@ -89,9 +41,6 @@ enum DownloadStatus: string
         };
     }
 
-    /**
-     * Check if download is waiting (not actively processing).
-     */
     public function isWaiting(): bool
     {
         return match ($this) {
@@ -100,9 +49,6 @@ enum DownloadStatus: string
         };
     }
 
-    /**
-     * Check if download is in post-processing.
-     */
     public function isPostProcessing(): bool
     {
         return match ($this) {
@@ -111,9 +57,7 @@ enum DownloadStatus: string
         };
     }
 
-    /**
-     * Get status priority for sorting (lower = more urgent).
-     */
+    /** Get status priority for sorting (lower = more urgent) */
     public function priority(): int
     {
         return match ($this) {
@@ -130,9 +74,7 @@ enum DownloadStatus: string
         };
     }
 
-    /**
-     * Get human-readable label.
-     */
+    /** Get human-readable label */
     public function label(): string
     {
         return match ($this) {
@@ -149,9 +91,7 @@ enum DownloadStatus: string
         };
     }
 
-    /**
-     * Get a CSS-friendly color class.
-     */
+    /** Get a CSS-friendly color class */
     public function colorClass(): string
     {
         return match ($this) {

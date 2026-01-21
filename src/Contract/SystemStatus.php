@@ -13,8 +13,6 @@ namespace MartinCamen\ArrCore\Contract;
  */
 interface SystemStatus
 {
-    /**
-     * Get the application/service version.
-     */
+    /** Get the application/service version */
     public function version(): string;
 }

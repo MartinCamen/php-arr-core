@@ -23,9 +23,7 @@ namespace MartinCamen\ArrCore\Data\Options\Concerns;
  */
 trait HasFiltering
 {
-    /**
-     * Set the filter value.
-     */
+    /** Set the filter value */
     abstract public function withFilter(string $filter): static;
 
     /**

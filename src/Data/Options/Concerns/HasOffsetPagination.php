@@ -24,14 +24,10 @@ namespace MartinCamen\ArrCore\Data\Options\Concerns;
  */
 trait HasOffsetPagination
 {
-    /**
-     * Set the number of items to take.
-     */
+    /** Set the number of items to take */
     abstract public function withTake(int $take): static;
 
-    /**
-     * Set the number of items to skip.
-     */
+    /** Set the number of items to skip */
     abstract public function withSkip(int $skip): static;
 
     /**

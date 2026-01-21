@@ -27,28 +27,18 @@ interface PaginatedResponse extends Countable, IteratorAggregate
      */
     public function all(): array;
 
-    /**
-     * Get the total number of items across all pages.
-     */
+    /** Get the total number of items across all pages */
     public function total(): int;
 
-    /**
-     * Get the current page number (1-indexed).
-     */
+    /** Get the current page number (1-indexed) */
     public function page(): int;
 
-    /**
-     * Get the total number of pages.
-     */
+    /** Get the total number of pages */
     public function pages(): int;
 
-    /**
-     * Get the number of items per page.
-     */
+    /** Get the number of items per page */
     public function pageSize(): int;
 
-    /**
-     * Check if the current page has no items.
-     */
+    /** Check if the current page has no items */
     public function isEmpty(): bool;
 }

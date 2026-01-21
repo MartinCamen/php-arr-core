@@ -27,27 +27,19 @@ use MartinCamen\ArrCore\Data\Enums\SortDirection;
  */
 trait HasSorting
 {
-    /**
-     * Set the sort key.
-     */
+    /** Set the sort key */
     abstract public function withSortKey(string $sortKey): static;
 
-    /**
-     * Set the sort direction.
-     */
+    /** Set the sort direction */
     abstract public function withSortDirection(SortDirection $direction): static;
 
-    /**
-     * Sort in ascending order.
-     */
+    /** Sort in ascending order */
     public function ascending(): static
     {
         return $this->withSortDirection(SortDirection::Ascending);
     }
 
-    /**
-     * Sort in descending order.
-     */
+    /** Sort in descending order */
     public function descending(): static
     {
         return $this->withSortDirection(SortDirection::Descending);

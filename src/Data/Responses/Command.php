@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MartinCamen\ArrCore\Data\Responses;
 
+use MartinCamen\ArrCore\Enum\CommandStatus;
+
 /**
  * Represents a command response from *arr APIs.
  *
@@ -36,7 +38,7 @@ final readonly class Command
             id: $data['id'] ?? 0,
             name: $data['name'] ?? '',
             commandName: $data['commandName'] ?? '',
-            status: $data['status'] ?? 'unknown',
+            status: $data['status'] ?? CommandStatus::Unknown->value,
             priority: $data['priority'] ?? 'normal',
             queued: $data['queued'] ?? null,
             started: $data['started'] ?? null,
@@ -73,22 +75,27 @@ final readonly class Command
 
     public function isQueued(): bool
     {
-        return $this->status === 'queued';
+        return $this->statusEqualsCommandStatus(CommandStatus::Queued);
     }
 
     public function isStarted(): bool
     {
-        return $this->status === 'started';
+        return $this->statusEqualsCommandStatus(CommandStatus::Started);
     }
 
     public function isCompleted(): bool
     {
-        return $this->status === 'completed';
+        return $this->statusEqualsCommandStatus(CommandStatus::Completed);
     }
 
     public function isFailed(): bool
     {
-        return $this->status === 'failed';
+        return $this->statusEqualsCommandStatus(CommandStatus::Failed);
+    }
+
+    private function statusEqualsCommandStatus(CommandStatus $commandStatus): bool
+    {
+        return CommandStatus::tryFrom($this->status) === $commandStatus;
     }
 
     public function isRunning(): bool

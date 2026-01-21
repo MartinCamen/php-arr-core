@@ -25,14 +25,10 @@ namespace MartinCamen\ArrCore\Data\Options\Concerns;
  */
 trait HasPagination
 {
-    /**
-     * Set the page number.
-     */
+    /** Set the page number */
     abstract public function withPage(int $page): static;
 
-    /**
-     * Set the page size.
-     */
+    /** Set the page size */
     abstract public function withPageSize(int $pageSize): static;
 
     /**
