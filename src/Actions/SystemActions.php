@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace MartinCamen\ArrCore\Actions;
 
 use MartinCamen\ArrCore\Client\RestClientInterface;
+use MartinCamen\ArrCore\Contract\SystemActionsInterface;
 use MartinCamen\ArrCore\Data\Enums\SystemEndpoint;
 use MartinCamen\ArrCore\Data\Responses\DiskSpaceCollection;
 use MartinCamen\ArrCore\Domain\System\DownloadServiceSystemSummary;
@@ -12,7 +15,7 @@ use MartinCamen\ArrCore\Domain\System\HealthCheckCollection;
  * @link https://wiki.servarr.com/sonarr/api
  * @link https://radarr.video/docs/api/#/System
  */
-readonly class SystemActions
+readonly class SystemActions implements SystemActionsInterface
 {
     public function __construct(protected RestClientInterface $client) {}
 

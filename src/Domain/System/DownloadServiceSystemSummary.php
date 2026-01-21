@@ -6,8 +6,9 @@ namespace MartinCamen\ArrCore\Domain\System;
 
 use MartinCamen\ArrCore\Contract\Arrayable;
 use MartinCamen\ArrCore\Contract\FromArray;
+use MartinCamen\ArrCore\Contract\SystemStatus;
 
-final readonly class DownloadServiceSystemSummary implements Arrayable, FromArray
+final readonly class DownloadServiceSystemSummary implements Arrayable, FromArray, SystemStatus
 {
     public function __construct(
         public string $appName,
@@ -114,5 +115,10 @@ final readonly class DownloadServiceSystemSummary implements Arrayable, FromArra
             'package_author'           => $this->packageAuthor,
             'package_update_mechanism' => $this->packageUpdateMechanism,
         ];
+    }
+
+    public function version(): string
+    {
+        return $this->version;
     }
 }

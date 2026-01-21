@@ -1,5 +1,10 @@
 # php-arr-core
 
+> [!IMPORTANT]
+> This project is still being developed and breaking changes might occur even between patch versions.
+>
+> The aim is to follow semantic versioning as soon as possible.
+
 A canonical domain model for the *arr ecosystem.
 
 `php-arr-core` provides **shared domain models, value objects, enums and normalization logic**
@@ -8,6 +13,17 @@ used across *arr service SDKs such as Sonarr, Radarr, Jellyseerr and NZBGet.
 The goal is to eliminate duplicated DTOs, inconsistent status handling and ad-hoc mappings
 between services that conceptually model the same things.
 
+## Ecosystem
+
+| Package                                                                 | Description                        |
+|-------------------------------------------------------------------------|------------------------------------|
+| [radarr-php](https://github.com/martincamen/radarr-php)                 | PHP SDK for Radarr                 |
+| [sonarr-php](https://github.com/martincamen/sonarr-php)                 | PHP SDK for Sonarr                 |
+| [jellyseerr-php](https://github.com/martincamen/jellyseerr-php)         | PHP SDK for Jellyseerr             |
+| [laravel-radarr](https://github.com/martincamen/laravel-radarr)         | Laravel integration for Radarr     |
+| [laravel-sonarr](https://github.com/martincamen/laravel-sonarr)         | Laravel integration for Sonarr     |
+| [laravel-jellyseerr](https://github.com/martincamen/laravel-jellyseerr) | Laravel integration for Jellyseerr |
+
 ---
 
 ## Why does this exist?
@@ -15,9 +31,8 @@ between services that conceptually model the same things.
 The *arr ecosystem is highly cohesive:
 
 - Sonarr, Radarr, Jellyseerr and NZBGet all model:
-    - media
-    - downloads
-    - queues
+    - media (movies, series, episodes)
+    - downloads (queue items)
     - file sizes
     - progress
     - statuses
@@ -40,20 +55,11 @@ that all *arr SDKs map to.
 
 ## What this package is
 
-✅ Pure PHP (no framework dependencies)
-✅ Canonical domain models
-✅ Value objects (FileSize, Duration, Progress, etc.)
-✅ Normalized enums and statuses
-✅ Mapping helpers and contracts
-
----
-
-## What this package is NOT
-
-❌ HTTP clients
-❌ API DTOs
-❌ Guzzle, Curl, or PSR-18 implementations
-❌ Service-specific assumptions
+- ✅ Pure PHP (no framework dependencies)
+- ✅ Canonical domain models
+- ✅ Value objects (FileSize, Duration, Progress, etc.)
+- ✅ Normalized enums and statuses
+- ✅ Mapping helpers and contracts
 
 ---
 
@@ -74,10 +80,10 @@ Anything that:
 - appears in multiple services
 - requires conversion or logic
 
-…is modeled as a value object.
+...is modeled as a value object.
 
 Examples:
-- `FileSize`
+- `ArrFileSize` (extends `martincamen/php-file-size`)
 - `Duration`
 - `Progress`
 
@@ -112,7 +118,7 @@ src/
 │   ├── Request/
 │   └── User/
 ├── ValueObject/
-│   ├── FileSize.php
+│   ├── ArrFileSize.php
 │   ├── Duration.php
 │   ├── Progress.php
 │   └── ArrId.php
@@ -131,14 +137,14 @@ src/
 
 ```php
 use MartinCamen\ArrCore\Domain\Download\DownloadItem;
-use MartinCamen\ArrCore\ValueObject\FileSize;
+use MartinCamen\ArrCore\ValueObject\ArrFileSize;
 use MartinCamen\ArrCore\ValueObject\Progress;
 use MartinCamen\ArrCore\Enum\DownloadStatus;
 
 $item = new DownloadItem(
     id: ArrId::fromInt(123),
     name: 'Example.Movie.2024',
-    size: FileSize::fromGB(8.5),
+    size: ArrFileSize::fromGigabytes(8.5),
     progress: Progress::fromPercentage(42),
     status: DownloadStatus::Downloading
 );
@@ -156,12 +162,14 @@ Each service SDK:
 Example:
 
 ```php
-$queueItems = $sonarr->queue();
+use MartinCamen\Sonarr\Sonarr;
 
-$coreItems = array_map(
-    fn($item) => SonarrToCoreMapper::mapQueueItem($item),
-    $queueItems
-);
+$sonarr = Sonarr::create('localhost', 8989, 'your-api-key');
+
+// Action-based API returns typed responses
+$downloads = $sonarr->downloads()->all();   // DownloadPage
+$series = $sonarr->series()->all();          // SeriesCollection
+$status = $sonarr->system()->status();       // SystemStatus
 ```
 
 ---
@@ -181,7 +189,7 @@ This package is designed to be used by:
 
 Breaking changes only occur when:
 - a domain concept changes
-- a value object’s behavior changes
+- a value object's behavior changes
 
 New services and fields should be additive whenever possible.
 

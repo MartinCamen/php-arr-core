@@ -10,7 +10,7 @@ use IteratorAggregate;
 use MartinCamen\ArrCore\Contract\Arrayable;
 use MartinCamen\ArrCore\Enum\DownloadStatus;
 use MartinCamen\ArrCore\Enum\Service;
-use MartinCamen\ArrCore\ValueObject\FileSize;
+use MartinCamen\ArrCore\ValueObject\ArrFileSize;
 use MartinCamen\ArrCore\ValueObject\Progress;
 use Traversable;
 
@@ -152,25 +152,29 @@ final readonly class DownloadItemCollection implements Arrayable, Countable, Ite
     /**
      * Get total size of all downloads.
      */
-    public function totalSize(): FileSize
+    public function totalSize(): ArrFileSize
     {
-        return array_reduce(
+        $totalBytes = array_reduce(
             $this->items,
-            static fn(FileSize $total, DownloadItem $item): FileSize => $total->add($item->size),
-            FileSize::zero(),
+            static fn(float $total, DownloadItem $item): float => $total + $item->size->getBytes(),
+            0.0,
         );
+
+        return ArrFileSize::fromBytes($totalBytes);
     }
 
     /**
      * Get total remaining size.
      */
-    public function totalRemaining(): FileSize
+    public function totalRemaining(): ArrFileSize
     {
-        return array_reduce(
+        $totalBytes = array_reduce(
             $this->items,
-            static fn(FileSize $total, DownloadItem $item): FileSize => $total->add($item->sizeRemaining),
-            FileSize::zero(),
+            static fn(float $total, DownloadItem $item): float => $total + $item->sizeRemaining->getBytes(),
+            0.0,
         );
+
+        return ArrFileSize::fromBytes($totalBytes);
     }
 
     /**
@@ -178,13 +182,13 @@ final readonly class DownloadItemCollection implements Arrayable, Countable, Ite
      */
     public function totalProgress(): Progress
     {
-        $totalBytes = $this->totalSize()->bytes();
+        $totalBytes = (int) $this->totalSize()->getBytes();
 
         if ($totalBytes === 0) {
             return Progress::zero();
         }
 
-        $downloadedBytes = $totalBytes - $this->totalRemaining()->bytes();
+        $downloadedBytes = (int) ($totalBytes - $this->totalRemaining()->getBytes());
 
         return Progress::fromFraction($downloadedBytes, $totalBytes);
     }

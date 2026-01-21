@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace MartinCamen\ArrCore\Data\Responses;
 
+use MartinCamen\ArrCore\Concerns\ConvertsFileSize;
+use MartinCamen\PhpFileSize\Enums\Unit;
 use MartinCamen\PhpFileSize\FileSize;
 
 /**
@@ -13,11 +15,13 @@ use MartinCamen\PhpFileSize\FileSize;
  */
 final readonly class DiskSpace
 {
+    use ConvertsFileSize;
+
     public function __construct(
         public string $path,
         public string $label,
-        public int $freeSpace,
-        public int $totalSpace,
+        public FileSize $freeSpace,
+        public FileSize $totalSpace,
     ) {}
 
     /** @param array<string, mixed> $data */
@@ -26,8 +30,8 @@ final readonly class DiskSpace
         return new self(
             path: $data['path'] ?? '',
             label: $data['label'] ?? '',
-            freeSpace: $data['freeSpace'] ?? 0,
-            totalSpace: $data['totalSpace'] ?? 0,
+            freeSpace: FileSize::fromBytes($data['freeSpace'] ?? 0),
+            totalSpace: FileSize::fromBytes($data['totalSpace'] ?? 0),
         );
     }
 
@@ -37,23 +41,25 @@ final readonly class DiskSpace
         return [
             'path'        => $this->path,
             'label'       => $this->label,
-            'free_space'  => $this->freeSpace,
-            'total_space' => $this->totalSpace,
+            'free_space'  => (int) $this->freeSpace->getBytes(),
+            'total_space' => (int) $this->totalSpace->getBytes(),
         ];
     }
 
-    public function usedSpace(): int
+    public function usedSpace(): FileSize
     {
-        return $this->totalSpace - $this->freeSpace;
+        return $this->totalSpace
+            ->subBytes($this->freeSpace->getBytes())
+            ->evaluate();
     }
 
     public function usedPercentage(): float
     {
-        if ($this->totalSpace === 0) {
+        if ($this->totalSpace->isZero()) {
             return 0.0;
         }
 
-        return round(($this->usedSpace() / $this->totalSpace) * 100, 2);
+        return round(($this->usedSpace()->getBytes() / $this->totalSpace->getBytes()) * 100, 2);
     }
 
     public function freePercentage(): float
@@ -61,18 +67,27 @@ final readonly class DiskSpace
         return 100.0 - $this->usedPercentage();
     }
 
-    public function freeSpaceGb(): float
+    /**
+     * Get free space in specified unit.
+     */
+    public function freeSpaceIn(Unit $unit, ?int $precision = 2): float
     {
-        return (new FileSize($this->freeSpace))->precision(2)->toGigabytes();
+        return $this->convertToUnit($this->freeSpace, $unit, $precision);
     }
 
-    public function totalSpaceGb(): float
+    /**
+     * Get total space in specified unit.
+     */
+    public function totalSpaceIn(Unit $unit, ?int $precision = 2): float
     {
-        return (new FileSize($this->totalSpace))->precision(2)->toGigabytes();
+        return $this->convertToUnit($this->totalSpace, $unit, $precision);
     }
 
-    public function usedSpaceGb(): float
+    /**
+     * Get used space in specified unit.
+     */
+    public function usedSpaceIn(Unit $unit, ?int $precision = 2): float
     {
-        return (new FileSize($this->usedSpace()))->precision(2)->toGigabytes();
+        return $this->convertToUnit($this->usedSpace(), $unit, $precision);
     }
 }

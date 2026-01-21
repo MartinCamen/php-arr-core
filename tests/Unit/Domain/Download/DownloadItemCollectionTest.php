@@ -8,8 +8,8 @@ use MartinCamen\ArrCore\Domain\Download\DownloadItem;
 use MartinCamen\ArrCore\Domain\Download\DownloadItemCollection;
 use MartinCamen\ArrCore\Enum\DownloadStatus;
 use MartinCamen\ArrCore\Enum\Service;
+use MartinCamen\ArrCore\ValueObject\ArrFileSize;
 use MartinCamen\ArrCore\ValueObject\ArrId;
-use MartinCamen\ArrCore\ValueObject\FileSize;
 use MartinCamen\ArrCore\ValueObject\Progress;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -145,8 +145,8 @@ final class DownloadItemCollectionTest extends TestCase
         $item1 = new DownloadItem(
             id: ArrId::fromInt(1),
             name: 'Item 1',
-            size: FileSize::fromGB(1),
-            sizeRemaining: FileSize::fromGB(0.5),
+            size: ArrFileSize::fromGigabytes(1),
+            sizeRemaining: ArrFileSize::fromGigabytes(0.5),
             progress: Progress::fromPercentage(50),
             status: DownloadStatus::Downloading,
             source: Service::NZBGet,
@@ -155,8 +155,8 @@ final class DownloadItemCollectionTest extends TestCase
         $item2 = new DownloadItem(
             id: ArrId::fromInt(2),
             name: 'Item 2',
-            size: FileSize::fromGB(2),
-            sizeRemaining: FileSize::fromGB(1),
+            size: ArrFileSize::fromGigabytes(2),
+            sizeRemaining: ArrFileSize::fromGigabytes(1),
             progress: Progress::fromPercentage(50),
             status: DownloadStatus::Downloading,
             source: Service::NZBGet,
@@ -164,8 +164,8 @@ final class DownloadItemCollectionTest extends TestCase
 
         $collection = new DownloadItemCollection($item1, $item2);
 
-        $this->assertSame(3.0, $collection->totalSize()->gb());
-        $this->assertSame(1.5, $collection->totalRemaining()->gb());
+        $this->assertSame(3.0, $collection->totalSize()->toGigabytes());
+        $this->assertSame(1.5, $collection->totalRemaining()->toGigabytes());
     }
 
     #[Test]
@@ -174,8 +174,8 @@ final class DownloadItemCollectionTest extends TestCase
         $item1 = new DownloadItem(
             id: ArrId::fromInt(1),
             name: 'Item 1',
-            size: FileSize::fromGB(2),
-            sizeRemaining: FileSize::fromGB(1),
+            size: ArrFileSize::fromGigabytes(2),
+            sizeRemaining: ArrFileSize::fromGigabytes(1),
             progress: Progress::fromPercentage(50),
             status: DownloadStatus::Downloading,
             source: Service::NZBGet,
@@ -184,8 +184,8 @@ final class DownloadItemCollectionTest extends TestCase
         $item2 = new DownloadItem(
             id: ArrId::fromInt(2),
             name: 'Item 2',
-            size: FileSize::fromGB(2),
-            sizeRemaining: FileSize::fromGB(0),
+            size: ArrFileSize::fromGigabytes(2),
+            sizeRemaining: ArrFileSize::fromGigabytes(0),
             progress: Progress::complete(),
             status: DownloadStatus::Completed,
             source: Service::NZBGet,
@@ -252,8 +252,8 @@ final class DownloadItemCollectionTest extends TestCase
         return new DownloadItem(
             id: ArrId::fromInt($id),
             name: "Item {$id}",
-            size: FileSize::fromGB(1),
-            sizeRemaining: FileSize::fromGB(0.5),
+            size: ArrFileSize::fromGigabytes(1),
+            sizeRemaining: ArrFileSize::fromGigabytes(0.5),
             progress: Progress::fromPercentage(50),
             status: $status,
             source: $source,

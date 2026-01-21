@@ -8,9 +8,9 @@ use MartinCamen\ArrCore\Domain\Media\Movie;
 use MartinCamen\ArrCore\Enum\MediaStatus;
 use MartinCamen\ArrCore\Enum\MediaType;
 use MartinCamen\ArrCore\Enum\Service;
+use MartinCamen\ArrCore\ValueObject\ArrFileSize;
 use MartinCamen\ArrCore\ValueObject\ArrId;
 use MartinCamen\ArrCore\ValueObject\Duration;
-use MartinCamen\ArrCore\ValueObject\FileSize;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
@@ -174,7 +174,7 @@ final class MovieTest extends TestCase
             status: MediaStatus::Available,
             monitored: true,
             source: Service::Radarr,
-            sizeOnDisk: FileSize::fromGB(8.5),
+            sizeOnDisk: ArrFileSize::fromGigabytes(8.5),
             imdbId: 'tt0133093',
         );
 
@@ -199,7 +199,7 @@ final class MovieTest extends TestCase
             status: MediaStatus::Available,
             monitored: true,
             source: Service::Radarr,
-            sizeOnDisk: FileSize::fromGB(4.5),
+            sizeOnDisk: ArrFileSize::fromGigabytes(4.5),
         );
 
         $withoutFiles = new Movie(
@@ -209,7 +209,7 @@ final class MovieTest extends TestCase
             status: MediaStatus::Missing,
             monitored: true,
             source: Service::Radarr,
-            sizeOnDisk: FileSize::zero(),
+            sizeOnDisk: ArrFileSize::zero(),
         );
 
         $this->assertTrue($withFiles->hasFiles());
