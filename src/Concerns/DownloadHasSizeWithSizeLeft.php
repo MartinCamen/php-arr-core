@@ -10,7 +10,7 @@ use MartinCamen\ArrCore\ValueObject\ArrFileSize;
  * @property int|float $size
  * @property int|float $sizeLeft
  */
-trait HasSizeWithSizeLeft
+trait DownloadHasSizeWithSizeLeft
 {
     public function getSizeGb(): float
     {
