@@ -8,6 +8,7 @@ enum TrackedDownloadState: string
 {
     case ImportPending = 'importPending';
     case Imported = 'imported';
+    case Unknown = 'unknown';
 
     public static function isCompleted(string $value): bool
     {
