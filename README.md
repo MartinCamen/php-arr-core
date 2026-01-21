@@ -1,5 +1,13 @@
 # php-arr-core
 
+## TODO
+[ ] extractPathParams exists in multiple projects (maybe more?)
+[ ] More enums
+[ ] The mappers, are they inactive for a reason?
+[ ] More testing in the Laravel projects
+[ ] DownloadPage -> DownloadCollection? More reasonable name
+[ ] Configuration files for Pint, Rector, etc; extract to a single repo/extract from this repo
+
 > [!IMPORTANT]
 > This project is still being developed and breaking changes might occur even between patch versions.
 >
